@@ -22,6 +22,7 @@ import oracle.jdbc.driver.OracleDriver;
  */
 public class ServerModel {
     Connection con;
+    PreparedStatement preparedStatement = null;
 
     public ServerModel() {
         try {
@@ -57,15 +58,59 @@ public class ServerModel {
         
     
     }
-    public boolean insertUser(User user){
-        boolean isInserted=false;
+    public int insertUser(User user){
+            int isInserted=0;
+            Statement statement;    
+        try {
+            statement = con.createStatement();
+            ResultSet rs = statement.executeQuery("select * from CHAT_USER");
+            while(rs.next()){
+                if(rs.getString("email").equals(user.getEmail())){
+                    return 2;
+                }
+            
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            isInserted=3;
+        }
+        
+            
+        
+       
+        String insertTableSQL = "INSERT INTO chat_user"
+				+ "(USER_NAME, EMAIL, PASSWORD, GENDER,COUNTRY,STATUS) VALUES"
+				+ "(?,?,?,?,?,?)";
+        try {
+            preparedStatement = con.prepareStatement(insertTableSQL);
+            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getPassword());
+            preparedStatement.setString(4, user.getGender());
+            preparedStatement.setString(5, user.getCountry());
+            preparedStatement.setString(6, user.getStatus());
+            preparedStatement.executeUpdate();
+
+            System.out.println("Record is inserted into DBUSER table!");
+            isInserted=1;
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            isInserted=3;
+        }
         
     
         return isInserted;
     } 
     public static void main(String[] args) {
         ServerModel serverModel=new ServerModel();
-        serverModel.AllUsers();
+        User u=new User();
+        u.setUserName("I_Desouky");
+        u.setEmail("hima@yahoo.com");
+        u.setCountry("Egypt");
+        u.setPassword("1234");
+        u.setGender("male");
+        u.setStatus("offline");
+        System.out.println(serverModel.insertUser(u));
     }
     
 }
