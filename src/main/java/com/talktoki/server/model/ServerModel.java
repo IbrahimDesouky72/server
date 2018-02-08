@@ -5,6 +5,7 @@
  */
 package com.talktoki.server.model;
 
+import com.talktoki.chatinterfaces.commans.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,12 +25,18 @@ public class ServerModel {
 
     public ServerModel() {
         try {
+            Class.forName("oracle.jdbc.driver.OracleDriver"); 
           DriverManager.registerDriver(new OracleDriver());
-           con=DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe","hr","hr");
+          // con=DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe","hr","hr");
+            con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","hr","hr");
+            System.out.println(con.isValid(5));
+           
            
       } catch (SQLException e) {
           e.printStackTrace();
-      }
+      } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void AllUsers(){
        Statement stmt ;
@@ -37,8 +44,9 @@ public class ServerModel {
         try {
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,  
                     ResultSet.CONCUR_UPDATABLE);
-             String queryString= new String("select * from chat_user");
-            rs= stmt.executeQuery(queryString) ;
+             String queryString=  "select * from chat_user";
+            rs= stmt.executeQuery(queryString);
+            
             while (rs.next()) {
                 System.out.println(rs.getString(1));
             
@@ -49,8 +57,15 @@ public class ServerModel {
         
     
     }
+    public boolean insertUser(User user){
+        boolean isInserted=false;
+        
+    
+        return isInserted;
+    } 
     public static void main(String[] args) {
         ServerModel serverModel=new ServerModel();
+        serverModel.AllUsers();
     }
     
 }

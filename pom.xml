@@ -54,6 +54,10 @@
             <version>11.2.0.1.0</version>
             <type>jar</type>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+
+
+        
     </dependencies>
 
 </project>
