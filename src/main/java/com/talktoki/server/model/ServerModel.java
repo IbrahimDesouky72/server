@@ -26,6 +26,7 @@ public class ServerModel {
     PreparedStatement preparedStatement = null;
     Statement statement=null;
     ResultSet resultSet=null;
+    String query="";
 
     public ServerModel() {
          try {
@@ -167,6 +168,73 @@ public class ServerModel {
 
         return isInserted;
     }
+    
+    public int sendFriendRequest(String senderEmail,String receiverEmail){
+        int inserted=0;
+        boolean isNotExist=false;
+        boolean areFriends=false;
+        boolean isAlreadyrequested=false;
+        boolean isConnectionError=false;
+        
+        try {
+            query ="select * from chat_user where email ='"+receiverEmail+"'";
+            statement=con.createStatement();
+            resultSet=statement.executeQuery(query);
+            if (!(resultSet.next())) {
+                inserted=1;
+                isNotExist=true;
+                System.out.println("not exist ");
+            }
+            query="select * from friends where (sender_email='"+senderEmail+"' and receiver_email='"+receiverEmail+"') or"
+                    +"(sender_email='"+receiverEmail+"' and receiver_email='"+senderEmail+"')";
+            //statement=con.createStatement();
+            resultSet=statement.executeQuery(query);
+            if(resultSet.next()){
+                inserted=2;
+                areFriends=true;
+                System.out.println("are friends");
+            
+            }
+            query="select * from friendrequests where (sender_email='"+senderEmail+"' and receiver_email='"+receiverEmail+"') or"
+                    +"(sender_email='"+receiverEmail+"' and receiver_email='"+senderEmail+"')";
+            
+            //statement=con.createStatement();
+            resultSet=statement.executeQuery(query);
+            if(resultSet.next()){
+                inserted=3;
+                isAlreadyrequested=true;
+                System.out.println("requested");
+            
+            }
+            if((!isNotExist)&&(!isAlreadyrequested)&&(!areFriends)){
+                query="insert into friendrequests(SENDER_EMAIL,RECEIVER_EMAIL) values ('"+senderEmail+"','"
+                        +receiverEmail+"')";
+                statement.executeUpdate(query);
+                inserted=5;
+                System.out.println("inserted");
+                
+            }
+            
+        } catch (SQLException ex) {
+            isConnectionError=true;
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            inserted=4;
+            
+        }
+        try {
+            resultSet.close();
+            statement.close();
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            return inserted;
+        
+        
+    
+    
+        
+    }
 
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
@@ -179,7 +247,7 @@ public class ServerModel {
         u.setStatus("offline");
        //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
         
-        System.out.println(serverModel.insertUser(u));
+        System.out.println(serverModel.sendFriendRequest("hima2@yahoo.com", "mahrous@gmail.com"));
     }
 
 }
