@@ -231,6 +231,27 @@ public class ServerModel {
     
         
     }
+    
+    public boolean  acceptFriendRequest(String senderEmail,String ReceiverEmail){
+        boolean isAccepted=false;
+       // query="delete from friendrequests where sender_email ='"+senderEmail+"' and receiver_email= '"+ReceiverEmail+"'";
+        try {
+            query="delete from friendrequests where SENDER_EMAIL ='"+senderEmail+"' and RECEIVER_EMAIL='"+ReceiverEmail+"'";
+            statement=con.createStatement();
+            int deleted=statement.executeUpdate(query);
+            System.out.println(deleted);
+            query="insert into friends (sender_email,receiver_email)values ('"+senderEmail
+                    +"','"+ReceiverEmail+"')";
+             isAccepted=statement.execute(query);
+            isAccepted=true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            isAccepted=false;
+        }finally{
+             return isAccepted;
+        }
+    
+    }
 
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
@@ -243,7 +264,7 @@ public class ServerModel {
         u.setStatus("offline");
        //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
         
-        System.out.println(serverModel.sendFriendRequest("hima2@yahoo.com", "mahrous@gmail.com"));
+        System.out.println(serverModel.acceptFriendRequest("hima@yahoo.com", "mahrous@gmail.com"));
     }
 
 }
