@@ -212,7 +212,9 @@ public class ServerModel {
                 statement.executeUpdate(query);
                 inserted=5;
                 System.out.println("inserted");
-                
+                 resultSet.close();
+            statement.close();
+            con.close();
             }
             
         } catch (SQLException ex) {
@@ -221,15 +223,9 @@ public class ServerModel {
             inserted=4;
             
         }
-        try {
-            resultSet.close();
-            statement.close();
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       finally{
             return inserted;
-        
+        }
         
     
     
