@@ -65,25 +65,30 @@ public class ServerModel {
             returning 3 means that you there is database error connection error 
             hint :column names of database are small case in result set like email not EMAIL */
             int isInserted=0;
+            boolean isExist=false;
+            boolean isCoonectinError=false;
             Statement statement;    
         try {
             statement = con.createStatement();
             ResultSet rs = statement.executeQuery("select * from CHAT_USER");
             while(rs.next()){
                 if(rs.getString("email").equals(user.getEmail())){
-                    return 2;
+                    isExist=true;
+                    isInserted=2;
+                    break;
                 }
             
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            isCoonectinError=true;
             isInserted=3;
         }
         
             
         
-       
-        String insertTableSQL = "INSERT INTO chat_user"
+       if(!isExist){
+           String insertTableSQL = "INSERT INTO chat_user"
 				+ "(USER_NAME, EMAIL, PASSWORD, GENDER,COUNTRY,STATUS) VALUES"
 				+ "(?,?,?,?,?,?)";
         try {
@@ -102,6 +107,14 @@ public class ServerModel {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
             isInserted=3;
         }
+       
+       
+       }else if(isCoonectinError){
+           isInserted=3;
+       }else if(isExist){
+           isInserted=2;
+       }
+        
         
     
         return isInserted;
@@ -110,7 +123,7 @@ public class ServerModel {
         ServerModel serverModel=new ServerModel();
         User u=new User();
         u.setUserName("I_Desouky");
-        u.setEmail("hima@yahoo.com");
+        u.setEmail("hima2@yahoo.com");
         u.setCountry("Egypt");
         u.setPassword("1234");
         u.setGender("male");
