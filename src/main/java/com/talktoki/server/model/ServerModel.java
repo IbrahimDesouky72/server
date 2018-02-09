@@ -59,6 +59,11 @@ public class ServerModel {
     
     }
     public int insertUser(User user){
+        
+        /** returning one means that the email inserted correctly 
+            returning two means that the email exists in the data base and you should enter another email
+            returning 3 means that you there is database error connection error 
+            hint :column names of database are small case in result set like email not EMAIL */
             int isInserted=0;
             Statement statement;    
         try {
