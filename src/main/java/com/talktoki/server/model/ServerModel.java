@@ -124,22 +124,18 @@ public class ServerModel {
         int isInserted = 0;
         boolean isExist = false;
         boolean isCoonectinError = false;
-        Statement statement;
+        
         try {
             statement = con.createStatement();
-            ResultSet rs = statement.executeQuery("select * from CHAT_USER");
-            while (rs.next()) {
-                if (rs.getString("email").equals(user.getEmail())) {
-                    isExist = true;
-                    isInserted = 2;
-                    break;
-                }
+            ResultSet rs = statement.executeQuery("select * from CHAT_USER where email ='"+user.getEmail()+"'");
+            if(rs.next()) {
+                isExist=true;
 
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
             isCoonectinError = true;
-            isInserted = 3;
+            
         }
 
         if (!isExist) {
@@ -175,15 +171,15 @@ public class ServerModel {
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
         User u = new User();
-//        u.setUserName("I_Desouky");
-//        u.setEmail("mahrous@yahoo.com");
-//        u.setCountry("Egypt");
-//        u.setPassword("1234");
-//        u.setGender("male");
-//        u.setStatus("offline");
-       u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
+        u.setUserName("I_Desouky");
+        u.setEmail("mahrous@yahoo.com");
+        u.setCountry("Egypt");
+        u.setPassword("1234");
+        u.setGender("male");
+        u.setStatus("offline");
+       //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
         
-        System.out.println(u.getGender());
+        System.out.println(serverModel.insertUser(u));
     }
 
 }
