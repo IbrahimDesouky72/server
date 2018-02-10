@@ -11,6 +11,7 @@ import com.talktoki.chatinterfaces.commans.User;
 import com.talktoki.chatinterfaces.server.ServerInterface;
 import com.talktoki.server.model.ServerModel;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -20,10 +21,17 @@ import java.util.logging.Logger;
  *
  * @author IbrahimDesouky
  */
-public class ServerImplemntation implements ServerInterface{
+public class ServerImplemntation extends UnicastRemoteObject implements ServerInterface {
 
-    ServerModel serverModel=new ServerModel();
-    ArrayList<ClientInterface>clients=new ArrayList<>();
+    ServerModel serverModel;
+    ArrayList<ClientInterface>clients;
+
+    public ServerImplemntation() throws RemoteException{
+        serverModel=new ServerModel();
+        clients=new ArrayList<>();
+    }
+    
+    
     
     @Override
     public User signIn(String email, String password) throws RemoteException {

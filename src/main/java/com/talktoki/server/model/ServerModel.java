@@ -272,7 +272,7 @@ public class ServerModel {
         u.setStatus("offline");
        //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
         
-        System.out.println(serverModel.acceptFriendRequest("hima@yahoo.com", "mahrous@gmail.com"));
+        System.out.println(serverModel.getUser("hima@yahoo.com", "1234"));
     }
 
 }
