@@ -5,6 +5,7 @@
  */
 package com.talktoki.server.model;
 
+import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBase;
 import com.talktoki.chatinterfaces.commans.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -251,6 +252,13 @@ public class ServerModel {
              return isAccepted;
         }
     
+    }
+    
+    public boolean deleteFriendRequest(){
+        boolean isDeleted=false;
+        
+    
+        return isDeleted;
     }
 
     public static void main(String[] args) {
