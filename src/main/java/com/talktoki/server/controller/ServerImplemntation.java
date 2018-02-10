@@ -118,7 +118,9 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
 
     @Override
     public int sendFriendshipRequest(String sender, String receiver) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int accepted=0;
+        accepted=serverModel.sendFriendRequest(sender, receiver);
+        return  accepted;
     }
 
     @Override
