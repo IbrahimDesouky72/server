@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import oracle.jdbc.driver.OracleDriver;
@@ -232,6 +233,29 @@ public class ServerModel {
     
         
     }
+    public ArrayList<String> getFriendRequests(String receiverEmail){
+    ArrayList<String>senderEmails=new ArrayList<>();
+    query="select sender_email from friendrequests where RECEIVER_EMAIL='"+receiverEmail+"'";
+        System.out.println(query);
+        try {
+            statement=con.createStatement();
+            resultSet=statement.executeQuery(query);
+            while (resultSet.next()) {  
+                
+                System.out.println("heloooo");
+                senderEmails.add(resultSet.getString("sender_email"));
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (int i = 0; i < senderEmails.size(); i++) {
+            System.out.println(senderEmails.get(i));
+        }
+    
+    return senderEmails;
+            
+    }
     
     public boolean  acceptFriendRequest(String senderEmail,String ReceiverEmail){
         boolean isAccepted=false;
@@ -254,11 +278,21 @@ public class ServerModel {
     
     }
     
-    public boolean deleteFriendRequest(){
+    public boolean deleteFriendRequest(String senderEmail,String receiverEmail){
         boolean isDeleted=false;
+        try {
+            
+            query="delete from friendrequests where SENDER_EMAIL ='"+senderEmail+"' and RECEIVER_EMAIL='"+receiverEmail+"'";
+            statement = con.createStatement();
+            statement.executeUpdate(query);
+            isDeleted=true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            isDeleted=false;
+        }finally{
+            return isDeleted;
+        }
         
-    
-        return isDeleted;
     }
 
     public static void main(String[] args) {
@@ -272,7 +306,7 @@ public class ServerModel {
         u.setStatus("offline");
        //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
         
-        System.out.println(serverModel.getUser("hima@yahoo.com", "1234"));
+        serverModel.getFriendRequests("mahrous@gmail.com");
     }
 
 }

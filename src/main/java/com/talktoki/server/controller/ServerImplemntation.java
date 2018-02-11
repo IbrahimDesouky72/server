@@ -43,6 +43,10 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public void addClient(ClientInterface client) throws RemoteException {
         clients.add(client);
+        ArrayList<String>requests=serverModel.getFriendRequests(client.getUser().getEmail());
+        for(int i=0;i<requests.size();i++){
+            client.receiveFriendshipRequest(requests.get(i), client.getUser().getEmail());
+        }
         
     }
 
@@ -120,12 +124,28 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     public int sendFriendshipRequest(String sender, String receiver) throws RemoteException {
         int accepted=0;
         accepted=serverModel.sendFriendRequest(sender, receiver);
+        for(int i=0;i<clients.size();i++){
+            if(clients.get(i).getUser().getEmail().equals(receiver)){
+                clients.get(i).receiveFriendshipRequest(sender, sender);
+                break;
+            }
+        
+        }
         return  accepted;
     }
 
     @Override
     public boolean friendshipRequestResponse(String recevier, String sender, boolean accepted) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean isAccepted=false;
+        if(accepted==true){
+            isAccepted=serverModel.acceptFriendRequest(sender, recevier);
+        
+        }else{
+            isAccepted=serverModel.deleteFriendRequest(sender, recevier);
+        
+        }
+        
+        return isAccepted;
     }
     
 }
