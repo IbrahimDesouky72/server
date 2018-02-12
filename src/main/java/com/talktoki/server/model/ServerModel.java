@@ -294,6 +294,57 @@ public class ServerModel {
         }
         
     }
+    
+    public ArrayList<User>getContactList(String email){
+        ArrayList<User>contacts=new ArrayList<>();
+        ArrayList<String>emails=new ArrayList<String>();
+        
+        query="select * from friends where sender_email='"+email+"' or receiver_email='"+email+"'";
+        try {
+            statement=con.createStatement();
+            resultSet=statement.executeQuery(query);
+            
+            while (resultSet.next()) {
+                //handle if friend name equals userName
+                if(resultSet.getString("sender_email").equals(email)){
+                    emails.add(resultSet.getString("receiver_email"));
+                
+                }else{
+                    emails.add(resultSet.getString("sender_email"));
+                }
+                
+            }
+            for(int i=0;i<emails.size();i++){
+              query ="select * from chat_user where email ='"+emails.get(i)+"'";
+              resultSet=statement.executeQuery(query);
+              
+              while(resultSet.next()) {
+                   
+                   String username = resultSet.getString("user_name");
+                    String userEmail = resultSet.getString("email");
+                    String gender = resultSet.getString("gender");
+                    String status = resultSet.getString("status");
+                    String country = resultSet.getString("country");
+                    String pass="";
+                    User u=new User(username, email, pass, gender, country, status);
+
+                }
+              
+            
+            }
+           
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+        
+        return contacts;
+    
+    }
 
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
@@ -306,7 +357,7 @@ public class ServerModel {
         u.setStatus("offline");
        //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
         
-        serverModel.getFriendRequests("mahrous@gmail.com");
+        serverModel.getContactList("mahrous@gmail.com");
     }
 
 }

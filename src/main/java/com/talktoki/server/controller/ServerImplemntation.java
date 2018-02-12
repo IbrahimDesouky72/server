@@ -116,7 +116,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 
     @Override
-    public HashMap<String, Integer> getContactList(String email) throws RemoteException {
+    public ArrayList<User> getContactList(String email) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
