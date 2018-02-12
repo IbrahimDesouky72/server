@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.talktoki.server.MainApp</mainClass>
+        <mainClass>com.talktoki.server.controller.MainServerApp</mainClass>
     </properties>
 
     <organization>
@@ -34,10 +34,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>8.6.0</version>
                 <configuration>
-                    <!--
-                    MAIN_CLASS will be changed later
-                    <mainClass>com.talktoki.server.controller.MAIN_CLASS</mainClass> 
-                    -->
+                    <mainClass>com.talktoki.server.controller.MainServerApp</mainClass> 
                 </configuration>
             </plugin>
         </plugins>
