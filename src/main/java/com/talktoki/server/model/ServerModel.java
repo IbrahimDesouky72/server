@@ -326,7 +326,8 @@ public class ServerModel {
                     String status = resultSet.getString("status");
                     String country = resultSet.getString("country");
                     String pass="";
-                    User u=new User(username, email, pass, gender, country, status);
+                    User user=new User(username, userEmail, pass, gender, country, status);
+                    contacts.add(user);
 
                 }
               
