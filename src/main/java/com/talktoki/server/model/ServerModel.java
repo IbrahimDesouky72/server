@@ -214,9 +214,7 @@ public class ServerModel {
                 statement.executeUpdate(query);
                 inserted=5;
                 System.out.println("inserted");
-                 resultSet.close();
-            statement.close();
-            con.close();
+                 
             }
             
         } catch (SQLException ex) {
