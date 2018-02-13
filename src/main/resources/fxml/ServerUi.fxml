@@ -45,18 +45,10 @@
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #514663;">
                <children>
-                  <PieChart fx:id="genderStatistic" layoutX="41.0" layoutY="54.0" prefHeight="195.0" prefWidth="207.0" style="-fx-background-color: #8cba80;" />
-                  <PieChart fx:id="onlineStatistic" layoutX="348.0" layoutY="53.0" prefHeight="197.0" prefWidth="205.0" style="-fx-background-color: #8cba80;" />
-                  <Label alignment="CENTER" layoutX="61.0" layoutY="23.0" text="Males and females">
-                     <font>
-                        <Font size="15.0" />
-                     </font></Label>
-                  <Label layoutX="349.0" layoutY="23.0" text="Online Users and Offilne Users">
-                     <font>
-                        <Font size="15.0" />
-                     </font></Label>
-                  <Button fx:id="genderBtn" layoutX="76.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateGenderChat" prefHeight="38.0" prefWidth="137.0" text="GenderPieChat" />
-                  <Button layoutX="385.0" layoutY="294.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="132.0" text="Online Users Chat" />
+                  <PieChart fx:id="genderStatistic" layoutX="11.0" layoutY="16.0" prefHeight="263.0" prefWidth="275.0" style="-fx-background-color: #c2d8bc;" />
+                  <PieChart fx:id="onlineStatistic" layoutX="313.0" layoutY="15.0" prefHeight="265.0" prefWidth="276.0" style="-fx-background-color: #8cba80;" />
+                  <Button fx:id="genderBtn" layoutX="76.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateGenderChat" prefHeight="38.0" prefWidth="145.0" text="Male/Female Statistic" />
+                  <Button layoutX="385.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateOnlineStatistic" prefHeight="38.0" prefWidth="146.0" text="Online/Offline Statistic" />
                </children>
             </AnchorPane>
          </content></Tab>
