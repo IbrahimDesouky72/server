@@ -71,10 +71,23 @@ public class MainUiController {
     @FXML
     void generateGenderChat(MouseEvent event) {
             ObservableList<PieChart.Data> details =  FXCollections.observableArrayList();
-            details.addAll(new PieChart.Data("Male percentage", 60) , new PieChart.Data("Female percentage", 40));
+            details.addAll( new PieChart.Data("Male percentage", 60) , new PieChart.Data("Female percentage", 40));
             genderStatistic.setData(details);
-            genderStatistic.setLabelsVisible(true);
-            genderStatistic.setLegendSide(Side.TOP);
+            genderStatistic.setTitle("Males and females");
+            //onlineStatistic.setTitle("Online Users and Offilne Users");
+            
+            //genderStatistic.setLabelsVisible(true);
+            //genderStatistic.setLegendSide(Side.BOTTOM);
+    }
+    
+    
+    @FXML
+    void generateOnlineStatistic(MouseEvent event) {
+             ObservableList<PieChart.Data> onlineOfflineStatisticList =  FXCollections.observableArrayList();
+            onlineOfflineStatisticList.addAll( new PieChart.Data("Online Users", 30) , new PieChart.Data("Offline Users", 70));
+            onlineStatistic.setData(onlineOfflineStatisticList);
+            onlineStatistic.setTitle("Online and offline Users Statistic");
+    
     }
 
 //    public void mouseClick(MouseEvent event)
