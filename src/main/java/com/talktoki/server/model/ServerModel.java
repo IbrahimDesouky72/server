@@ -14,8 +14,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.ws.ServiceMode;
 import oracle.jdbc.driver.OracleDriver;
 
 /**
@@ -34,8 +36,8 @@ public class ServerModel {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             DriverManager.registerDriver(new OracleDriver());
-            // con=DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe","hr","hr");
-            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
+             con=DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe","hr","hr");
+            //con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
             System.out.println(con.isValid(5));
 
         } catch (SQLException e) {
@@ -335,18 +337,146 @@ public class ServerModel {
 
     }
 
+    /**
+     * CreateChatGroup Method
+     * @param groupId
+     * @param users
+     * @return returnNum (-1 , 1 , 3) :: 
+     * return -1 mean that this group is already exist
+     * return 1 mean that the group  is inserted in DB correctly
+     * return 3 mean that there is a problem with the db while insertion
+     */
+    public int createChatGroup(String groupId, List<User> users) {
+        int returnNum = 0; 
+        boolean isExist = false;
+       
+        try {
+             statement = con.createStatement();
+            ResultSet rs = statement.executeQuery("select * from group_chat where groupId ='" + groupId + "'");
+            if (rs.next()) {
+                isExist = true;
+                returnNum = -1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            //returnNum=3;
+        }
+
+        if (!isExist) {
+            for (User user : users) {
+                query = "INSERT INTO group_chat"
+                        + "(groupId , group_user) VALUES"
+                        + "(?,?)";
+                try {
+                    preparedStatement = con.prepareStatement(query);
+                    preparedStatement.setString(1, groupId);
+                    preparedStatement.setString(2, user.getEmail());
+                    preparedStatement.execute();
+                    returnNum=1;
+                } catch (SQLException ex) {
+                    Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex); 
+                    returnNum=3;
+                }
+            }
+        }
+
+        return returnNum;
+    }
+
+    /***
+     * getUserByEmail
+     * @param email
+     * @return User Object
+     */
+    public User getUserByEmail(String email) {
+        // TODO
+        // getConnection()
+        User user = null;
+        query = "select * from chat_user where email =?";
+        try {
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String userName = resultSet.getString("user_name");
+                String userPassword = "";
+                String Email = resultSet.getString("email");
+                String gender = resultSet.getString("gender");
+                String country = resultSet.getString("country");
+                String status = resultSet.getString("status");
+                user = new User();
+                user.setUserName(userName);
+                user.setEmail(Email);
+                user.setPassword(userPassword);
+                user.setGender(gender);
+                user.setCountry(country);
+                user.setStatus(status);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //TODO 
+        //Close Connection
+        return user;
+    }
+
+    /***
+     * getGroupByGroupId
+     * @param groupId
+     * @return List of users
+     */
+    // there is a problem with this function it return the first result only it should return a full list of the users 
+    //the db query return 3 users that has been added before 
+    // i have test this on the sql command and it return corrct but in this method return wrong result  
+    public List<User> getGroupByGroupId(String groupId) {
+        
+        List<User> usersList = new ArrayList<>();
+        query = "select group_user from group_chat where groupId =?";
+        try {
+            preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, groupId);
+            resultSet = preparedStatement.executeQuery();        
+            while (resultSet.next()) {
+
+                String userEmail = resultSet.getString(1);
+                User user = getUserByEmail(userEmail);
+                user.setPassword("");
+                usersList.add(user);
+            }
+           // return usersList;
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return usersList;
+    }
+
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
         User u = new User();
         u.setUserName("I_Desouky");
-        u.setEmail("mahrous@yahoo.com");
+        u.setEmail("Ibrahim.desouky44@gmail.com");
         u.setCountry("Egypt");
         u.setPassword("1234");
         u.setGender("male");
         u.setStatus("offline");
+        User u1 = serverModel.getUserByEmail("bodourhassan@gmail.com");
+        User u2 = serverModel.getUserByEmail("bassemgawesh@gmail.com");
+        User u3 = serverModel.getUserByEmail("mahrous@gmail.com");
         //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
-
-        serverModel.getContactList("mahrous@gmail.com");
+        List<User> userList = new ArrayList<>();
+        userList.add(u1);
+        userList.add(u2);
+        userList.add(u3);
+       // int x = serverModel.createChatGroup("ChatGroupTest3", userList);
+       List<User> returnList = serverModel.getGroupByGroupId("ChatGroupTest3");
+       for(int i=0;i<returnList.size();i++)
+       {
+           User user = returnList.get(i);
+           System.out.println("User name" + user.getUserName());
+       }
+        //System.out.println("resut db = ");
+        //serverModel.getContactList("mahrous@gmail.com");
     }
 
 }
