@@ -44,8 +44,14 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     public void addClient(ClientInterface client) throws RemoteException {
         clients.add(client);
         ArrayList<String>requests=serverModel.getFriendRequests(client.getUser().getEmail());
-        for(int i=0;i<requests.size();i++){
-            client.receiveFriendshipRequest(requests.get(i), client.getUser().getEmail());
+        for (int i = 0; i < requests.size(); i++) {
+
+            // WE NEEDED SENDER_NAME AND SENDER_EMAIL 
+            // YOU CALL CLIENT WITH => Sender email and receiver email !!!
+            // client.receiveFriendshipRequest(requests.get(i), client.getUser().getEmail());
+            
+            // I WILL SEND EMAIL AND EMAIL UNTIL YOU FIX IT 
+            client.receiveFriendshipRequest(requests.get(i), requests.get(i));
         }
         
     }
@@ -100,7 +106,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 
     @Override
-    public int createGroup(String group_id, String[] group_members) throws RemoteException {
+    public int createGroup(String group_id, User[] group_members) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
