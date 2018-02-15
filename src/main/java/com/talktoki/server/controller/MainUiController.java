@@ -5,11 +5,14 @@
  */
 package com.talktoki.server.controller;
 
+import java.net.URL;
 import java.util.Observer;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
@@ -36,7 +39,7 @@ import javafx.scene.input.MouseEvent;
  * @onlineStatistic
  *
  */
-public class MainUiController {
+public class MainUiController implements Initializable{
 
     @FXML
     private TabPane serverTabPane;
@@ -67,6 +70,8 @@ public class MainUiController {
 
     @FXML
     private Button genderBtn;
+    
+    ServerController controller;
 
     @FXML
     void generateGenderChat(MouseEvent event) {
@@ -90,8 +95,27 @@ public class MainUiController {
     
     }
 
+    @FXML
+    public void start(ActionEvent event){
+       controller.start();
+        System.out.println("com.talktoki.server.controller.MainUiController.initialize()"); 
+    
+    }
+    
+    @FXML
+    public void stop(ActionEvent event){
+        controller.stop();
+    
+    }
 //    public void mouseClick(MouseEvent event)
 //    {
 //        genderStatistic.getData().
 //    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        controller=new ServerController();
+        
+    
+    }
 }

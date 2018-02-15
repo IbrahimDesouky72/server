@@ -5,6 +5,7 @@
  */
 package com.talktoki.server.controller;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -18,21 +19,43 @@ import java.util.logging.Logger;
 public class ServerController {
     
     ServerImplemntation serverImplemntation;
+    Registry registry ;
 
-    public ServerController() {
+    public ServerController()  {
         try {
+            registry = LocateRegistry.createRegistry(2000);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+    public static void main(String[] args)  {
+        new ServerController();
+    }
+    
+    public void start(){
+                try {
             serverImplemntation=new ServerImplemntation();
             
-            Registry registry = LocateRegistry.createRegistry(2000);
+            
             registry.rebind("chat", serverImplemntation);
 
         } catch (RemoteException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+                
+                
     
-    public static void main(String[] args) {
-        new ServerController();
+    }
+    public void stop(){
+        try {
+            registry.unbind("chat");
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotBoundException ex) {
+            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     

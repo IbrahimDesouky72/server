@@ -10,14 +10,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<TabPane fx:id="serverTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.talktoki.server.controller.MainUiController">
+<TabPane fx:id="serverTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.talktoki.server.controller.MainUiController">
   <tabs>
     <Tab fx:id="serviceTab" style="-fx-background-color: #658e9c;" text="Server Management">
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #514663;">
                <children>
-                  <Button fx:id="startBtn" layoutX="177.0" layoutY="277.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="103.0" style="-fx-background-color: #8cba80;" text="Start" />
-                  <Button fx:id="stopBtn" layoutX="307.0" layoutY="277.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="101.0" style="-fx-background-color: #bd5252;" text="Stop" />
+                  <Button fx:id="startBtn" layoutX="177.0" layoutY="277.0" mnemonicParsing="false" onAction="#start" prefHeight="44.0" prefWidth="103.0" style="-fx-background-color: #8cba80;" text="Start" />
+                  <Button fx:id="stopBtn" layoutX="307.0" layoutY="277.0" mnemonicParsing="false" onAction="#stop" prefHeight="44.0" prefWidth="101.0" style="-fx-background-color: #bd5252;" text="Stop" />
                   <ImageView fitHeight="192.0" fitWidth="442.0" layoutX="86.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
                   <Label layoutX="120.0" layoutY="230.0" prefHeight="35.0" prefWidth="361.0" text="Welcome to Talktoki Chat Server" textFill="#cacf85">
                      <font>
