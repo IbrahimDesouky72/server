@@ -391,7 +391,7 @@ public class ServerModel {
     public User getUserByEmail(String email) {
         // TODO
         // getConnection()
-        User user = null;
+        User user = new User();
         query = "select * from chat_user where email =?";
         try {
             preparedStatement = con.prepareStatement(query);
@@ -405,7 +405,7 @@ public class ServerModel {
                 String gender = resultSet.getString("gender");
                 String country = resultSet.getString("country");
                 String status = resultSet.getString("status");
-                user = new User();
+                
                 user.setUserName(userName);
                 user.setEmail(Email);
                 user.setPassword(userPassword);
@@ -426,25 +426,19 @@ public class ServerModel {
      * @param groupId
      * @return List of users
      */
-    // there is a problem with this function it return the first result only it should return a full list of the users 
-    //the db query return 3 users that has been added before 
-    // i have test this on the sql command and it return corrct but in this method return wrong result  
     public List<User> getGroupByGroupId(String groupId) {
         
         List<User> usersList = new ArrayList<>();
-        query = "select group_user from group_chat where groupId =?";
+        query = "select group_user from group_chat where groupId ='ChatGroupTest3'";
         try {
-            preparedStatement = con.prepareStatement(query);
-            preparedStatement.setString(1, groupId);
-            resultSet = preparedStatement.executeQuery();        
-            while (resultSet.next()) {
-
-                String userEmail = resultSet.getString(1);
+            Statement statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                        ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                String userEmail = rs.getString(1);
                 User user = getUserByEmail(userEmail);
-                user.setPassword("");
                 usersList.add(user);
             }
-           // return usersList;
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -460,21 +454,22 @@ public class ServerModel {
         u.setPassword("1234");
         u.setGender("male");
         u.setStatus("offline");
-        User u1 = serverModel.getUserByEmail("bodourhassan@gmail.com");
-        User u2 = serverModel.getUserByEmail("bassemgawesh@gmail.com");
-        User u3 = serverModel.getUserByEmail("mahrous@gmail.com");
+//        User u1 = serverModel.getUserByEmail("bodourhassan@gmail.com");
+//        User u2 = serverModel.getUserByEmail("bassemgawesh@gmail.com");
+//        User u3 = serverModel.getUserByEmail("mahrous@gmail.com");
         //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
-        List<User> userList = new ArrayList<>();
-        userList.add(u1);
-        userList.add(u2);
-        userList.add(u3);
-       // int x = serverModel.createChatGroup("ChatGroupTest3", userList);
-       List<User> returnList = serverModel.getGroupByGroupId("ChatGroupTest3");
-       for(int i=0;i<returnList.size();i++)
-       {
-           User user = returnList.get(i);
-           System.out.println("User name" + user.getUserName());
-       }
+//        List<User> userList = new ArrayList<>();
+//        userList.add(u1);
+//        userList.add(u2);
+//        userList.add(u3);
+//        int x = serverModel.createChatGroup("ChatGroupTest3", userList);
+//        System.out.println("return number" + x);
+//        List<User> returnList = serverModel.getGroupByGroupId("ChatGroupTest3");
+//       for(int i=0;i<returnList.size();i++)
+//       {
+//           User user = returnList.get(i);
+//           System.out.println("User name" + user.getUserName());
+//       }
         //System.out.println("resut db = ");
         //serverModel.getContactList("mahrous@gmail.com");
     }
