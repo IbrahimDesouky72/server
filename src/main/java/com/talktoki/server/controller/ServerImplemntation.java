@@ -78,17 +78,17 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public boolean sendToOne(String sender_email, String receiver_email, Message message) throws RemoteException {
         /*boolean isSent=false;
-        clients.forEach((ClientInterface clientInterface)->{
-            try {
-                if(receiver_email.equals(clientInterface.getUser().getEmail())){
-                    isSent=true;
+         clients.forEach((ClientInterface clientInterface)->{
+         try {
+         if(receiver_email.equals(clientInterface.getUser().getEmail())){
+         isSent=true;
                     
-                }   } catch (RemoteException ex) {
-                Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
-            }
+         }   } catch (RemoteException ex) {
+         Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+         }
         
-        });
-        return isSent;*/
+         });
+         return isSent;*/
         boolean isSent = false;
         for (int i = 0; i < clients.size(); i++) {
             if (clients.get(i).getUser().getEmail().equals(receiver_email)) {
@@ -135,18 +135,29 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 
     @Override
-    public ArrayList<String> getUserGroupsIDs(String user_email) {
+    public ArrayList<String> getUserGroupsIDs(String user_email) throws RemoteException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArrayList<User> getGroupUsers(String group_id) {
+    public ArrayList<User> getGroupUsers(String group_id) throws RemoteException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int notifyStatus(String email, int status) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void notifyStatus(String email, int status) throws RemoteException {
+        // TODO Update my status in database    
+        // Get my friends
+        ArrayList<User> friends = serverModel.getContactList(email);
+        User changedUser = serverModel.getUserByEmail(email);
+        // Notify online friends
+        for (ClientInterface client : clients) {
+            for (User friend : friends) {
+                if (friend.getEmail().equals(client.getUser().getEmail())) {
+                    client.notifyFriendStatusChanged(changedUser, status);
+                }
+            }
+        }
     }
 
 
