@@ -24,58 +24,55 @@ import java.util.logging.Logger;
 public class ServerImplemntation extends UnicastRemoteObject implements ServerInterface {
 
     ServerModel serverModel;
-    ArrayList<ClientInterface>clients;
+    ArrayList<ClientInterface> clients;
 
-    public ServerImplemntation() throws RemoteException{
-        serverModel=new ServerModel();
-        clients=new ArrayList<>();
+    public ServerImplemntation() throws RemoteException {
+        serverModel = new ServerModel();
+        clients = new ArrayList<>();
     }
-    
-    
-    
+
     @Override
     public User signIn(String email, String password) throws RemoteException {
-        User u=serverModel.getUser(email, password);
+        User u = serverModel.getUser(email, password);
         return u;
-    
+
     }
-    
+
     @Override
     public void addClient(ClientInterface client) throws RemoteException {
         clients.add(client);
-        ArrayList<String>requests=serverModel.getFriendRequests(client.getUser().getEmail());
+        ArrayList<String> requests = serverModel.getFriendRequests(client.getUser().getEmail());
         for (int i = 0; i < requests.size(); i++) {
 
             // WE NEEDED SENDER_NAME AND SENDER_EMAIL 
             // YOU CALL CLIENT WITH => Sender email and receiver email !!!
             // client.receiveFriendshipRequest(requests.get(i), client.getUser().getEmail());
-            
             // I WILL SEND EMAIL AND EMAIL UNTIL YOU FIX IT 
             client.receiveFriendshipRequest(requests.get(i), requests.get(i));
         }
-        
+
     }
 
     @Override
     public int signUp(User user) throws RemoteException {
-        int num=serverModel.insertUser(user);
+        int num = serverModel.insertUser(user);
         return num;
-    
+
     }
 
     @Override
     public boolean signOut(ClientInterface myclient) throws RemoteException {
-        boolean isSignedOut=false;
-        for(int i=0;i<clients.size();i++){
-            if(myclient==clients.get(i)){
+        boolean isSignedOut = false;
+        for (int i = 0; i < clients.size(); i++) {
+            if (myclient == clients.get(i)) {
                 clients.remove(i);
-                isSignedOut=true;
-            
+                isSignedOut = true;
+
             }
-        
+
         }
         return isSignedOut;
-    
+
     }
 
     @Override
@@ -92,30 +89,51 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         
         });
         return isSent;*/
-        boolean isSent=false;
-        for(int i=0;i<clients.size();i++){
-            if(clients.get(i).getUser().getEmail().equals(receiver_email)){
-                isSent=true;
+        boolean isSent = false;
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).getUser().getEmail().equals(receiver_email)) {
+                isSent = true;
                 clients.get(i).receiveFromOne(sender_email, message);
                 break;
             }
-        
+
         }
-        
+
         return isSent;
     }
 
     @Override
     public int createGroup(String group_id, ArrayList<User> group_members) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int returnValue = serverModel.createChatGroup(group_id, group_members);
+        return returnValue;
     }
 
     @Override
-    public boolean sendToGroup(String sender_email, Message message, String group_id) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean sendToGroup(String sender_email, Message message, String group_id) {
+        boolean sent = false;
+        int groupListCounter = 0;
+        ArrayList<User> userList = serverModel.getGroupByGroupId(group_id);
+        for (ClientInterface client : clients) {
+            for (User userFromUserList : userList) {
+                try {
+                    if (client.getUser().getEmail() == userFromUserList.getEmail()) {
+
+                        client.receiveInGroup(group_id, sender_email, message);
+                        groupListCounter++;
+
+                    }
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+                    sent = false;
+                }
+            }
+        }
+        if (groupListCounter == userList.size()) {
+            sent = true;
+        }
+        return sent;
     }
 
-    
     @Override
     public boolean notifyStatus(String email, int status) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -123,36 +141,36 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
 
     @Override
     public ArrayList<User> getContactList(String email) throws RemoteException {
-        ArrayList<User>friends=serverModel.getContactList(email);
+        ArrayList<User> friends = serverModel.getContactList(email);
         return friends;
     }
 
     @Override
     public int sendFriendshipRequest(String sender, String receiver) throws RemoteException {
-        int accepted=0;
-        accepted=serverModel.sendFriendRequest(sender, receiver);
-        for(int i=0;i<clients.size();i++){
-            if(clients.get(i).getUser().getEmail().equals(receiver)){
+        int accepted = 0;
+        accepted = serverModel.sendFriendRequest(sender, receiver);
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).getUser().getEmail().equals(receiver)) {
                 clients.get(i).receiveFriendshipRequest(sender, sender);
                 break;
             }
-        
+
         }
-        return  accepted;
+        return accepted;
     }
 
     @Override
     public boolean friendshipRequestResponse(String recevier, String sender, boolean accepted) throws RemoteException {
-        boolean isAccepted=false;
-        if(accepted==true){
-            isAccepted=serverModel.acceptFriendRequest(sender, recevier);
-        
-        }else{
-            isAccepted=serverModel.deleteFriendRequest(sender, recevier);
-        
+        boolean isAccepted = false;
+        if (accepted == true) {
+            isAccepted = serverModel.acceptFriendRequest(sender, recevier);
+
+        } else {
+            isAccepted = serverModel.deleteFriendRequest(sender, recevier);
+
         }
-        
+
         return isAccepted;
     }
-    
+
 }

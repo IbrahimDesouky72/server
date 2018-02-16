@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -426,10 +427,10 @@ public class ServerModel {
      * @param groupId
      * @return List of users
      */
-    public List<User> getGroupByGroupId(String groupId) {
+    public ArrayList<User> getGroupByGroupId(String groupId) {
         
-        List<User> usersList = new ArrayList<>();
-        query = "select group_user from group_chat where groupId ='ChatGroupTest3'";
+        ArrayList<User> usersList = new ArrayList<>();
+        query = "select group_user from group_chat where groupId ='ChatGroupTest3' ";
         try {
             Statement statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                                         ResultSet.CONCUR_UPDATABLE);
@@ -445,6 +446,25 @@ public class ServerModel {
         return usersList;
     }
 
+    public HashMap<String,String> getGroupHashList(String groupId , String groupDate)
+    {
+        try {
+            HashMap<String, String> groupHashMap = new HashMap();
+            String sqlQuery = "select groupId , groupDate from group_chat where groupId=? and groupDate =?";
+            PreparedStatement pStatement = con.prepareStatement(sqlQuery);
+            pStatement.setString(0, groupId);
+            pStatement.setString(1, groupDate);
+            ResultSet hashMapResult = pStatement.executeQuery();
+           // while(hashMapResult)
+                    
+                    
+                  
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+          return null;
+    }
+    
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
         User u = new User();
