@@ -45,7 +45,7 @@
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #514663;">
                <children>
-                  <PieChart fx:id="genderStatistic" layoutX="11.0" layoutY="16.0" prefHeight="263.0" prefWidth="275.0" style="-fx-background-color: #c2d8bc;" />
+                  <PieChart fx:id="genderStatistic" layoutX="11.0" layoutY="16.0" prefHeight="263.0" prefWidth="275.0" style="-fx-background-color: #8cba80;" />
                   <PieChart fx:id="onlineStatistic" layoutX="313.0" layoutY="15.0" prefHeight="265.0" prefWidth="276.0" style="-fx-background-color: #8cba80;" />
                   <Button fx:id="genderBtn" layoutX="76.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateGenderChat" prefHeight="38.0" prefWidth="145.0" text="Male/Female Statistic" />
                   <Button layoutX="385.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateOnlineStatistic" prefHeight="38.0" prefWidth="146.0" text="Online/Offline Statistic" />
