@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +37,7 @@ public class ServerModel {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             DriverManager.registerDriver(new OracleDriver());
-             con=DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe","hr","hr");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "hr", "hr");
             //con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "hr", "hr");
             System.out.println(con.isValid(5));
 
@@ -338,44 +339,44 @@ public class ServerModel {
     }
 
     /**
-     * CreateChatGroup Method
      * @param groupId
+     * @param date
      * @param users
-     * @return returnNum (-1 , 1 , 3) :: 
-     * return -1 mean that this group is already exist
-     * return 1 mean that the group  is inserted in DB correctly
-     * return 3 mean that there is a problem with the db while insertion
+     * @return returnNum (-1 "group already exist", 1 "group inserted correctly", 3 "problem with DB")
      */
     public int createChatGroup(String groupId, List<User> users) {
-        int returnNum = 0; 
+        int returnNum = 0;
         boolean isExist = false;
-       
+
         try {
-             statement = con.createStatement();
-            ResultSet rs = statement.executeQuery("select * from group_chat where groupId ='" + groupId + "'");
+            String sqlQuery = "select * from group_chat where group_id = ?";
+            PreparedStatement pStatement = con.prepareStatement(sqlQuery);
+            pStatement.setString(1, groupId);
+            //pStatement.setString(2, date);
+            ResultSet rs = pStatement.executeQuery();
             if (rs.next()) {
                 isExist = true;
                 returnNum = -1;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
-            //returnNum=3;
+            returnNum = 3;
         }
-
         if (!isExist) {
             for (User user : users) {
                 query = "INSERT INTO group_chat"
-                        + "(groupId , group_user) VALUES"
+                        + "(group_id , group_user) VALUES"
                         + "(?,?)";
                 try {
                     preparedStatement = con.prepareStatement(query);
                     preparedStatement.setString(1, groupId);
                     preparedStatement.setString(2, user.getEmail());
+                    //preparedStatement.setString(3, date);
                     preparedStatement.execute();
-                    returnNum=1;
+                    returnNum = 1;
                 } catch (SQLException ex) {
-                    Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex); 
-                    returnNum=3;
+                    Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+                    returnNum = 3;
                 }
             }
         }
@@ -383,7 +384,7 @@ public class ServerModel {
         return returnNum;
     }
 
-    /***
+    /**
      * getUserByEmail
      * @param email
      * @return User Object
@@ -405,7 +406,7 @@ public class ServerModel {
                 String gender = resultSet.getString("gender");
                 String country = resultSet.getString("country");
                 String status = resultSet.getString("status");
-                
+
                 user.setUserName(userName);
                 user.setEmail(Email);
                 user.setPassword(userPassword);
@@ -421,28 +422,86 @@ public class ServerModel {
         return user;
     }
 
-    /***
-     * getGroupByGroupId
+    /**
+     * get group
      * @param groupId
-     * @return List of users
+     * @param groupDate
+     * @return
      */
-    public List<User> getGroupByGroupId(String groupId) {
-        
-        List<User> usersList = new ArrayList<>();
-        query = "select group_user from group_chat where groupId ='ChatGroupTest3'";
+    public ArrayList<String> getUserGroupsIds(String userEmail) {
+        ArrayList<String> userGroupList = new ArrayList<>();
         try {
-            Statement statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                                        ResultSet.CONCUR_UPDATABLE);
-            ResultSet rs = statement.executeQuery(query);
-            while (rs.next()) {
-                String userEmail = rs.getString(1);
-                User user = getUserByEmail(userEmail);
-                usersList.add(user);
+            String sqlQuery = "select group_id from group_chat where group_user=?";
+            PreparedStatement pStatement = con.prepareStatement(sqlQuery);
+            pStatement.setString(1, userEmail);
+            ResultSet arrayResultSet = pStatement.executeQuery();
+            while (arrayResultSet.next()) {
+                // System.out.println("rows Number" + resultSetHashMap.getRow());
+                String groupIdStr = arrayResultSet.getString(1);
+                // System.out.println("groupName:" + group);
+                //String date = arrayResultSet.getString(2);
+                //System.out.println("groupName:" + date);
+                userGroupList.add(groupIdStr);
+            }
+            arrayResultSet.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userGroupList;
+    }
+    /***
+     * Check if the group exist or not
+     * @param groupId
+     * @return true if the group exist esle return false
+     */
+    public boolean isGroupExist(String groupId) {
+        boolean exist = false;
+        try {
+            String sqlQuery = "select group_id from group_chat where group_id =?";
+            PreparedStatement pStatement = con.prepareStatement(sqlQuery);
+            pStatement.setString(1, groupId);
+            ResultSet isExistResultSet = pStatement.executeQuery();
+            if (isExistResultSet.next()) {
+                 exist=true;
+            }else{
+                exist=false;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return usersList;
+        return exist;
+    }
+    /**
+     * Get User List of a Specific group
+     * @param groupId
+     * @return a list of users 
+     */
+    public ArrayList<User> getGroupUsers(String groupId) {
+        ArrayList<User> listOfUsers = null;
+        if (isGroupExist(groupId)) {
+            listOfUsers = new ArrayList<>();
+            try {
+                String sqlQuery = "select group_user from group_chat where group_id =?";
+                PreparedStatement pStatement = con.prepareStatement(sqlQuery);
+                pStatement.setString(1, groupId);
+                ResultSet usersResultSet = pStatement.executeQuery();
+                while (usersResultSet.next()) {
+                    String userEmail = usersResultSet.getString(1);
+                    User user = getUserByEmail(userEmail);
+                    listOfUsers.add(user);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return listOfUsers;
+        }
+        else
+        {
+            return listOfUsers;
+        }
+
     }
 
     public static void main(String[] args) {
@@ -454,22 +513,19 @@ public class ServerModel {
         u.setPassword("1234");
         u.setGender("male");
         u.setStatus("offline");
-//        User u1 = serverModel.getUserByEmail("bodourhassan@gmail.com");
-//        User u2 = serverModel.getUserByEmail("bassemgawesh@gmail.com");
-//        User u3 = serverModel.getUserByEmail("mahrous@gmail.com");
+        
+////       User u1 = serverModel.getUserByEmail("bodourhassan@gmail.com");
+////       User u2 = serverModel.getUserByEmail("bassemgawesh@gmail.com");
+////       User u3 = serverModel.getUserByEmail("mahrous@gmail.com");
         //u=serverModel.getUser("Ibrahim.desouky44@gmail.com", "hima");
 //        List<User> userList = new ArrayList<>();
 //        userList.add(u1);
 //        userList.add(u2);
 //        userList.add(u3);
-//        int x = serverModel.createChatGroup("ChatGroupTest3", userList);
-//        System.out.println("return number" + x);
-//        List<User> returnList = serverModel.getGroupByGroupId("ChatGroupTest3");
-//       for(int i=0;i<returnList.size();i++)
-//       {
-//           User user = returnList.get(i);
-//           System.out.println("User name" + user.getUserName());
-//       }
+//        int x = serverModel.createChatGroup("ChatGroupTest3",userList);
+//        int y = serverModel.createChatGroup("ChatGroupTest3",userList);
+//        System.out.println("return number" + y);
+        
         //System.out.println("resut db = ");
         //serverModel.getContactList("mahrous@gmail.com");
     }
