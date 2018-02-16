@@ -106,7 +106,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 
     @Override
-    public int createGroup(String group_id, User[] group_members) throws RemoteException {
+    public int createGroup(String group_id, ArrayList<User> group_members) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
