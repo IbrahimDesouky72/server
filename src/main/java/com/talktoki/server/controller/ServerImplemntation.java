@@ -135,9 +135,21 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 
     @Override
-    public boolean notifyStatus(String email, int status) throws RemoteException {
+    public ArrayList<String> getUserGroupsIDs(String user_email) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public ArrayList<User> getGroupUsers(String group_id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int notifyStatus(String email, int status) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
 
     @Override
     public ArrayList<User> getContactList(String email) throws RemoteException {
