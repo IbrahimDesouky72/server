@@ -65,8 +65,13 @@ public class ServerModel {
     }
     private void closeResultSet(){
         try {
-            statement.close();
-            preparedStatement.close();
+            if(statement!=null){
+                statement.close();
+            }else if(preparedStatement!=null){
+                preparedStatement.close();
+            }
+            
+            
             resultSet.close();
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
