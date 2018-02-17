@@ -63,6 +63,16 @@ public class ServerModel {
         }
 
     }
+    private void closeResultSet(){
+        try {
+            statement.close();
+            preparedStatement.close();
+            resultSet.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
 
     public void AllUsers() {
         // getConnection();
@@ -81,6 +91,8 @@ public class ServerModel {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            closeResultSet();
         }
 
     }
@@ -111,6 +123,7 @@ public class ServerModel {
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+            closeResultSet();
             return user;
         }
 
@@ -169,7 +182,7 @@ public class ServerModel {
         } else if (isExist) {
             isInserted = 2;
         }
-
+        closeResultSet();
         return isInserted;
     }
 
@@ -225,6 +238,7 @@ public class ServerModel {
             inserted = 4;
 
         } finally {
+            closeResultSet();
             return inserted;
         }
 
@@ -249,7 +263,7 @@ public class ServerModel {
         for (int i = 0; i < senderEmails.size(); i++) {
             System.out.println(senderEmails.get(i));
         }
-
+        closeResultSet();
         return senderEmails;
 
     }
@@ -270,6 +284,7 @@ public class ServerModel {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
             isAccepted = false;
         } finally {
+            closeResultSet();
             return isAccepted;
         }
 
@@ -287,6 +302,7 @@ public class ServerModel {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
             isDeleted = false;
         } finally {
+            closeResultSet();
             return isDeleted;
         }
 
@@ -333,7 +349,7 @@ public class ServerModel {
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        closeResultSet();
         return contacts;
 
     }
@@ -380,7 +396,7 @@ public class ServerModel {
                 }
             }
         }
-
+        closeResultSet();
         return returnNum;
     }
 
@@ -419,6 +435,7 @@ public class ServerModel {
         }
         //TODO 
         //Close Connection
+        closeResultSet();
         return user;
     }
 
@@ -447,8 +464,11 @@ public class ServerModel {
 
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }finally{
+            closeResultSet();
         return userGroupList;
+        }
+        
     }
     /***
      * Check if the group exist or not
@@ -469,8 +489,10 @@ public class ServerModel {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            closeResultSet();
+            return exist;
         }
-        return exist;
     }
     /**
      * Get User List of a Specific group
@@ -495,14 +517,18 @@ public class ServerModel {
             } catch (SQLException ex) {
                 Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
             }
+            closeResultSet();
             return listOfUsers;
         }
         else
         {
+            closeResultSet();
             return listOfUsers;
         }
 
     }
+    
+    
 
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
@@ -527,7 +553,7 @@ public class ServerModel {
 //        System.out.println("return number" + y);
         
         //System.out.println("resut db = ");
-        //serverModel.getContactList("mahrous@gmail.com");
+        serverModel.getContactList("mahrous@gmail.com");
     }
 
 }
