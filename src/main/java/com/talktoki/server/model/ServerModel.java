@@ -551,6 +551,65 @@ public class ServerModel {
     }
     
     
+    
+     public float[] getGenderSatistics()
+    {
+        float [] genderStatisticArray = new float[2];
+        float maleNumber = 0;
+        float femaleNumber = 0;
+        try {
+            String genderStatisticQuery = "select count(email) from chat_user where gender = 'male'";
+            Statement stmt = con.createStatement();
+            ResultSet genderRs = stmt.executeQuery(genderStatisticQuery);
+            if(genderRs.next())
+            {
+                maleNumber = Integer.parseInt(genderRs.getString(1));
+            }
+            genderStatisticQuery="select count(email) from chat_user where gender = 'female'";
+            stmt = con.createStatement();
+            genderRs = stmt.executeQuery(genderStatisticQuery);
+            if(genderRs.next())
+            {
+                femaleNumber = Integer.parseInt(genderRs.getString(1));
+            }
+            genderStatisticArray[0]= ((maleNumber/(maleNumber + femaleNumber))*100);
+            genderStatisticArray[1]=((femaleNumber/(maleNumber + femaleNumber))*100);
+                genderRs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return genderStatisticArray;
+    }
+    
+    public float [] getOnlineStatistic()
+    {
+        float[] statusStatisticArray = new float[2];
+        float onlineNumber = 0;
+        float offlineNumber = 0;
+        
+        try {
+            String sqlStatisticQuery = "select count(email) from chat_user where status = 'online'";
+            Statement stmt = con.createStatement();
+            ResultSet statusRs = stmt.executeQuery(sqlStatisticQuery);
+            if(statusRs.next())
+            {
+                onlineNumber = Integer.parseInt(statusRs.getString(1));
+            }
+            sqlStatisticQuery="select count(email) from chat_user where status='offline'";
+            stmt = con.createStatement();
+            statusRs = stmt.executeQuery(sqlStatisticQuery);
+            if(statusRs.next())
+            {
+                offlineNumber = Integer.parseInt(statusRs.getString(1));
+            }
+            statusStatisticArray[0]= ((onlineNumber/(onlineNumber + offlineNumber))*100);
+            statusStatisticArray[1]=((offlineNumber/(onlineNumber + offlineNumber))*100);
+            statusRs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return statusStatisticArray;
+    }
 
     public static void main(String[] args) {
         ServerModel serverModel = new ServerModel();
