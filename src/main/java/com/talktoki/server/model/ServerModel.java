@@ -104,9 +104,10 @@ public class ServerModel {
 
     public User getUser(String email, String password) {
         User user = null;
-        String query = "select * from chat_user where email ='" + email + "' and password='" + password + "'";
+         query = "select * from chat_user where email ='" + email + "' and password='" + password + "'";
         try {
-            statement = con.createStatement();
+            statement = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
             resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
                 String userName = resultSet.getString("user_name");
@@ -114,14 +115,15 @@ public class ServerModel {
                 String Email = resultSet.getString("email");
                 String gender = resultSet.getString("gender");
                 String country = resultSet.getString("country");
-                String status = resultSet.getString("status");
+                //String status = resultSet.getString("status");
+                setStatus(Email, "online");
                 user = new User();
                 user.setUserName(userName);
                 user.setEmail(Email);
                 user.setPassword(userPassword);
                 user.setGender(gender);
                 user.setCountry(country);
-                user.setStatus(status);
+                user.setStatus("online");
 
             }
 
@@ -533,6 +535,21 @@ public class ServerModel {
 
     }
     
+    public void setStatus(String userEmail,String status){
+        query="update chat_user set status='"+status +"' where email='"+userEmail+"'";
+        try {
+            System.out.println(query);
+            statement=con.createStatement();
+            int x=statement.executeUpdate(query);
+            System.out.println(x);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    
+    }
+    
     
 
     public static void main(String[] args) {
@@ -558,7 +575,7 @@ public class ServerModel {
 //        System.out.println("return number" + y);
         
         //System.out.println("resut db = ");
-        serverModel.getContactList("mahrous@gmail.com");
+        serverModel.setStatus("mahrous@gmail.com","online");
     }
 
 }
