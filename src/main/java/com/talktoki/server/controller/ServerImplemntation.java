@@ -216,7 +216,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 //-1 user not found ,0 error in remote connection,
     @Override
-    public int SendFile(String sender_Email, String reciever_Email, File file) {
+    public int SendFile(String sender_Email, String reciever_Email, File file) throws RemoteException{
         ClientInterface recieveClient=null;
         for (int i = 0; i < clients.size(); i++) {
             try {
