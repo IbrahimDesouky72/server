@@ -10,6 +10,8 @@ import com.talktoki.chatinterfaces.commans.Message;
 import com.talktoki.chatinterfaces.commans.User;
 import com.talktoki.chatinterfaces.server.ServerInterface;
 import com.talktoki.server.model.ServerModel;
+import java.io.File;
+import java.io.FileInputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -135,13 +137,13 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }
 
     @Override
-    public ArrayList<String> getUserGroupsIDs(String user_email) throws RemoteException{
+    public ArrayList<String> getUserGroupsIDs(String user_email) throws RemoteException {
         ArrayList<String> groupList = serverModel.getUserGroupsIds(user_email);
         return groupList;
     }
 
     @Override
-    public ArrayList<User> getGroupUsers(String group_id) throws RemoteException{
+    public ArrayList<User> getGroupUsers(String group_id) throws RemoteException {
         ArrayList<User> userList = serverModel.getGroupUsers(group_id);
         return userList;
     }
@@ -161,8 +163,6 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
             }
         }
     }
-
-
 
     @Override
     public ArrayList<User> getContactList(String email) throws RemoteException {
@@ -196,6 +196,39 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         }
 
         return isAccepted;
+    }
+//-1 user not found ,0 error in remote connection,
+    @Override
+    public int SendFile(String sender_Email, String reciever_Email, File file) {
+        ClientInterface recieveClient=null;
+        for (int i = 0; i < clients.size(); i++) {
+            try {
+                if (clients.get(i).getUser().getEmail().equals(reciever_Email)) {
+                    recieveClient=clients.get(i);
+                }
+                else
+                {
+                    System.out.println("The user Not found");
+                   
+                   return -1;
+                }
+            } catch (RemoteException ex) {
+                return 0;    
+            }
+        }
+        try {
+
+            FileInputStream in = new FileInputStream(file);
+            byte[] mydata = new byte[1024 * 1024];
+            int mylen = in.read(mydata);
+            while (mylen > 0) {
+                recieveClient.reciveFile(file.getName(), mydata, mylen);
+                mylen = in.read(mydata);
+            }
+        } catch (Exception e) {
+           return 0;
+        }
+        return 1;
     }
 
 }
