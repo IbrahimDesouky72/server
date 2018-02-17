@@ -113,13 +113,6 @@ public class MainUiController implements Initializable{
         onlineOfflineObservableList.addAll( onlineData , offlineData);
         onlineStatistic.setData(onlineOfflineObservableList);
         onlineStatistic.setTitle("Online and offline Users Statistic");
-            
-           
-            
-            //onlineStatistic.setTitle("Online Users and Offilne Users");
-            
-            //genderStatistic.setLabelsVisible(true);
-            //genderStatistic.setLegendSide(Side.BOTTOM);
     }
     
     @FXML
