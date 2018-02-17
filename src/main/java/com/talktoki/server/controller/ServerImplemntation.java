@@ -112,7 +112,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     public boolean sendToGroup(String sender_email, Message message, String group_id) {
         boolean sent = false;
         int groupListCounter = 0;
-        ArrayList<User> userList = serverModel.getGroupByGroupId(group_id);
+        ArrayList<User> userList = serverModel.getGroupUsers(group_id);
         for (ClientInterface client : clients) {
             for (User userFromUserList : userList) {
                 try {
