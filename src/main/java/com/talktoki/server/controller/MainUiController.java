@@ -6,9 +6,16 @@
 package com.talktoki.server.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.talktoki.server.model.ServerModel;
 import java.net.URL;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -74,40 +81,47 @@ public class MainUiController implements Initializable{
     private PieChart onlineStatistic;
 
     @FXML
-    private Button genderBtn;
+    private JFXButton refershBtn;
     
     @FXML
     private Label serverStatus;
     
     ServerController controller;
 
-    @FXML
-    void generateGenderChat(MouseEvent event) {
-            ObservableList<PieChart.Data> genderStatistics =  FXCollections.observableArrayList();
-            PieChart.Data maleData = new PieChart.Data("Male("+60+")", 60);
-            PieChart.Data femaleData = new PieChart.Data("Female("+40+")", 40);
-            genderStatistics.addAll( maleData ,femaleData);
-            genderStatistic.setData(genderStatistics);
-            genderStatistic.setTitle("Males and females");
-           
-            //onlineStatistic.setTitle("Online Users and Offilne Users");
+    private void generateChart()
+    {
+        ObservableList<PieChart.Data> genderObservableList =  FXCollections.observableArrayList();
+        ObservableList<PieChart.Data> onlineOfflineObservableList =  FXCollections.observableArrayList();
+        ServerModel serverModelObj = new ServerModel();
+        float[] genderStatisticArray= serverModelObj.getGenderSatistics();
+        int malePercentage = (int)genderStatisticArray[0];
+        int femalePercentage=(int)genderStatisticArray[1];
+        
+        float[] onlineStatisticArray = serverModelObj.getOnlineStatistic();
+        int onlinePercentage = (int)onlineStatisticArray[0];
+        int offlinePercentage=(int)onlineStatisticArray[1];
+        
+        PieChart.Data maleData = new PieChart.Data("Male("+malePercentage+"%)" , malePercentage);
+        PieChart.Data femaleData = new PieChart.Data("Female("+femalePercentage+"%)", femalePercentage);
             
-            //genderStatistic.setLabelsVisible(true);
-            //genderStatistic.setLegendSide(Side.BOTTOM);
+        PieChart.Data onlineData = new PieChart.Data("Online("+onlinePercentage+"%)",onlinePercentage);
+        PieChart.Data offlineData = new PieChart.Data("Offline("+offlinePercentage+"%)",offlinePercentage);
+            
+        genderObservableList.addAll( maleData ,femaleData);
+        genderStatistic.setData(genderObservableList);
+        genderStatistic.setTitle("Males and females");
+        onlineOfflineObservableList.addAll( onlineData , offlineData);
+        onlineStatistic.setData(onlineOfflineObservableList);
+        onlineStatistic.setTitle("Online and offline Users Statistic");
+    }
+    
+    @FXML
+    void generateStatistic(ActionEvent event) {
+            generateChart();
     }
     
     
-    @FXML
-    void generateOnlineStatistic(MouseEvent event) {
-             ObservableList<PieChart.Data> onlineOfflineStatisticList =  FXCollections.observableArrayList();
-             PieChart.Data onlineData = new PieChart.Data("Online("+30+"%)",30);
-             PieChart.Data offlineData = new PieChart.Data("Offline("+70+"%)",70);
-            onlineOfflineStatisticList.addAll( onlineData , offlineData);
-            onlineStatistic.setData(onlineOfflineStatisticList);
-            onlineStatistic.setTitle("Online and offline Users Statistic");
-            
     
-    }
 
     @FXML
     public void start(ActionEvent event){
@@ -130,6 +144,8 @@ public class MainUiController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        controller=new ServerController();    
+        controller=new ServerController();   
+        generateChart();
+        
     }
 }

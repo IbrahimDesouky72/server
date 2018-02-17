@@ -69,10 +69,13 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
             if (myclient == clients.get(i)) {
                 clients.remove(i);
                 isSignedOut = true;
+                serverModel.setStatus(myclient.getUser().getEmail(), "offline");
+                break;
 
             }
 
         }
+        
         return isSignedOut;
 
     }
@@ -150,7 +153,21 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
 
     @Override
     public void notifyStatus(String email, int status) throws RemoteException {
-        // TODO Update my status in database    
+        // TODO Update my status in database   
+         if (status == 0) {
+            serverModel.setStatus(email, "offline");
+        } else if (status == 1) {
+            serverModel.setStatus(email, "online");
+        } else if (status == 2) {
+            
+            serverModel.setStatus(email, "away");
+        } else if (status == 3) {
+            
+            serverModel.setStatus(email, "busy");
+          }
+        
+        
+        
         // Get my friends
         ArrayList<User> friends = serverModel.getContactList(email);
         User changedUser = serverModel.getUserByEmail(email);
