@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,43 +11,52 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<TabPane fx:id="serverTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.talktoki.server.controller.MainUiController">
+<TabPane fx:id="serverTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-text-fill: #ffefef;" stylesheets="@../styles/Styles.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.talktoki.server.controller.MainUiController">
   <tabs>
-    <Tab fx:id="serviceTab" style="-fx-background-color: #658e9c;" text="Server Management">
+    <Tab fx:id="serviceTab" style="-fx-background-color: #6ec1c1;" text="Server Management">
          <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #514663;">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #1D8C8C;">
                <children>
-                  <Button fx:id="startBtn" layoutX="177.0" layoutY="277.0" mnemonicParsing="false" onAction="#start" prefHeight="44.0" prefWidth="103.0" style="-fx-background-color: #8cba80;" text="Start" />
-                  <Button fx:id="stopBtn" layoutX="307.0" layoutY="277.0" mnemonicParsing="false" onAction="#stop" prefHeight="44.0" prefWidth="101.0" style="-fx-background-color: #bd5252;" text="Stop" />
-                  <ImageView fitHeight="192.0" fitWidth="442.0" layoutX="86.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
-                  <Label layoutX="120.0" layoutY="230.0" prefHeight="35.0" prefWidth="361.0" text="Welcome to Talktoki Chat Server" textFill="#cacf85">
+                  <ImageView fitHeight="192.0" fitWidth="442.0" layoutX="80.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label layoutX="121.0" layoutY="219.0" prefHeight="35.0" prefWidth="361.0" text="Welcome to Talktoki Chat Server" textFill="#cacf85">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
+                  <Label fx:id="serverStatus" layoutX="273.0" layoutY="260.0" prefHeight="26.0" prefWidth="157.0" text="abssssd" textFill="#17d73d">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+                  <Label alignment="CENTER" layoutX="200.0" layoutY="259.0" prefHeight="28.0" prefWidth="70.0" text="Status :" textFill="#fffafa">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <JFXButton id="record-sales-green" fx:id="startBtn" layoutX="156.0" layoutY="296.0" onAction="#start" prefHeight="46.0" prefWidth="106.0" text="Start" />
+                  <JFXButton id="record-sales" fx:id="stopBtn" layoutX="325.0" layoutY="294.0" onAction="#stop" prefHeight="50.0" prefWidth="105.0" text="Stop" />
                </children>
             </AnchorPane>
          </content></Tab>
-      <Tab fx:id="announcementTab" style="-fx-background-color: #658e9c;" text="Announcement">
+      <Tab fx:id="announcementTab" style="-fx-background-color: #6ec1c1;" text="Announcement">
          <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #514663;">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #1D8C8C;">
                <children>
-                  <TextArea fx:id="announcementTxtArea" layoutX="46.0" layoutY="63.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #658e9c; -fx-border-radius: 2%;" />
+                  <TextArea fx:id="announcementTxtArea" layoutX="46.0" layoutY="63.0" prefHeight="230.0" prefWidth="221.0" style="-fx-background-color: #658e9c; -fx-border-radius: 2%;" />
                   <Label layoutX="46.0" layoutY="22.0" prefHeight="30.0" prefWidth="207.0" text="Write Announcement" textFill="#cacf85">
                      <font>
                         <Font size="20.0" />
                      </font></Label>
-                  <Button fx:id="announcementBtn" layoutX="355.0" layoutY="144.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="142.0" style="-fx-background-color: #8cba80;" text="Send To Users" />
+                  <JFXButton id="round-red" fx:id="announcementBtn" layoutX="367.0" layoutY="154.0" prefHeight="49.0" prefWidth="131.0" style="-fx-background-color: #5bcc74;" text="Send To Users" />
                </children>
             </AnchorPane>
          </content>
       </Tab>
-    <Tab fx:id="statisticTab" style="-fx-background-color: #658e9c;" text="Statistic">
+    <Tab fx:id="statisticTab" style="-fx-background-color: #6ec1c1;" text="Statistic">
          <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #514663;">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #1D8C8C;">
                <children>
-                  <PieChart fx:id="genderStatistic" layoutX="11.0" layoutY="16.0" prefHeight="263.0" prefWidth="275.0" style="-fx-background-color: #8cba80;" />
-                  <PieChart fx:id="onlineStatistic" layoutX="313.0" layoutY="15.0" prefHeight="265.0" prefWidth="276.0" style="-fx-background-color: #8cba80;" />
+                  <PieChart fx:id="genderStatistic" layoutY="1.0" prefHeight="278.0" prefWidth="286.0" />
+                  <PieChart fx:id="onlineStatistic" layoutX="296.0" layoutY="2.0" prefHeight="278.0" prefWidth="302.0" />
                   <Button fx:id="genderBtn" layoutX="76.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateGenderChat" prefHeight="38.0" prefWidth="145.0" text="Male/Female Statistic" />
                   <Button layoutX="385.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#generateOnlineStatistic" prefHeight="38.0" prefWidth="146.0" text="Online/Offline Statistic" />
                </children>

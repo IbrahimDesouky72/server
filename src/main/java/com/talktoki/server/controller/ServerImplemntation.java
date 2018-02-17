@@ -136,12 +136,14 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
 
     @Override
     public ArrayList<String> getUserGroupsIDs(String user_email) throws RemoteException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<String> groupList = serverModel.getUserGroupsIds(user_email);
+        return groupList;
     }
 
     @Override
     public ArrayList<User> getGroupUsers(String group_id) throws RemoteException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<User> userList = serverModel.getGroupUsers(group_id);
+        return userList;
     }
 
     @Override
