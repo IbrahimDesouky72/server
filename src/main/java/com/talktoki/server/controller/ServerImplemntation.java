@@ -208,12 +208,26 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
             isAccepted = serverModel.deleteFriendRequest(sender, recevier);
 
         }
-
+        // Update contacts list of both reciever and sender
+        for (ClientInterface client : clients) {
+            if(client.getUser().getEmail().equals(recevier) || client.getUser().getEmail().equals(sender))
+            {
+                client.refreshContacts();
+            }
+        }
         return isAccepted;
     }
     
     /**********Mahrous*********/
-    
+    public void SendAnnouncementToAll(String announcement){
+        for (ClientInterface client : clients) {
+            try {
+                client.receiveServerAnnouncement(announcement);
+            } catch (RemoteException ex) {
+                Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }                                
     /**********Mahrous*********/
 //-1 user not found ,0 error in remote connection,1 success
 
