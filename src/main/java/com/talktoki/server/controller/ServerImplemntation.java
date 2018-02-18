@@ -234,13 +234,16 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public int SendFile(String sender_Email, String reciever_Email,String FileName,byte[] Data,int Length) throws RemoteException {
         ClientInterface recieveClient = null;
+        System.out.println("recieverrrrr"+reciever_Email);
+        System.out.println("length"+clients.size());
         for (ClientInterface client : clients) {
             try {
-                System.out.println(""+reciever_Email);
-                System.out.println(""+client.getUser().getEmail());
+                
+                System.out.println("every person :"+client.getUser().getEmail());
                 if (client.getUser().getEmail().equals(reciever_Email)) {
-                    client.reciveFile(sender_Email,FileName,Data,Length);
-                    System.out.println("user found");
+                   recieveClient=client; 
+                     System.out.println("user found");
+                     break;
                 } else {
                     System.out.println("The user Not found");
                     return -1;
@@ -249,12 +252,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
                 return 0;
             }  
         }
-//        for (int i = 0; i < clients.size(); i++) {
-//          
-//        }
-       
-                
-        
+     recieveClient.reciveFile(sender_Email,FileName,Data,Length);  
         return 1;
     }
 
