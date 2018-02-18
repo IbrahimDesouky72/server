@@ -11,6 +11,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  *
@@ -24,8 +26,15 @@ public class ServerController {
     public ServerController()  {
         try {
             registry = LocateRegistry.createRegistry(2000);
+            
         } catch (RemoteException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Server Error Message");
+            alert.setHeaderText("Server Handling");
+            alert.setContentText("You can not open server twice !!");
+
+            alert.showAndWait();
+            System.exit(0);
         }
 
     }

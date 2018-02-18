@@ -152,8 +152,8 @@ public class ServerModel {
 
         try {
             statement = con.createStatement();
-            ResultSet rs = statement.executeQuery("select * from CHAT_USER where email ='" + user.getEmail() + "'");
-            if (rs.next()) {
+             resultSet = statement.executeQuery("select * from CHAT_USER where email ='" + user.getEmail() + "'");
+            if (resultSet.next()) {
                 isExist = true;
 
             }
@@ -615,7 +615,7 @@ public class ServerModel {
         ServerModel serverModel = new ServerModel();
         User u = new User();
         u.setUserName("I_Desouky");
-        u.setEmail("Ibrahim.desouky44@gmail.com");
+        u.setEmail("hima7@gmail.com");
         u.setCountry("Egypt");
         u.setPassword("1234");
         u.setGender("male");
@@ -634,7 +634,7 @@ public class ServerModel {
 //        System.out.println("return number" + y);
         
         //System.out.println("resut db = ");
-        serverModel.setStatus("mahrous@gmail.com","online");
+        System.out.println(serverModel.insertUser(u));
     }
 
 }
