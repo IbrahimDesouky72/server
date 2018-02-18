@@ -58,6 +58,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public int signUp(User user) throws RemoteException {
         int num = serverModel.insertUser(user);
+        System.out.println("num :"+num);
         return num;
 
     }
