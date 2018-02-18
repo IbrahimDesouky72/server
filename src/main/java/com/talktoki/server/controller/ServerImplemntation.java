@@ -230,9 +230,11 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     }                                
     /**********Mahrous*********/
 //-1 user not found ,0 error in remote connection,1 success
-
+/************Bodour*////////////
+    
     @Override
     public int SendFile(String sender_Email, String reciever_Email,String FileName,byte[] Data,int Length) throws RemoteException {
+        boolean checkfound=true;
         ClientInterface recieveClient = null;
         System.out.println("recieverrrrr"+reciever_Email);
         System.out.println("length"+clients.size());
@@ -243,17 +245,26 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
                 if (client.getUser().getEmail().equals(reciever_Email)) {
                    recieveClient=client; 
                      System.out.println("user found");
+                     checkfound=true;
                      break;
                 } else {
                     System.out.println("The user Not found");
-                    return -1;
+                    checkfound=false;
                 }
             } catch (RemoteException ex) {
                 return 0;
             }  
         }
-     recieveClient.reciveFile(sender_Email,FileName,Data,Length);  
+        if(checkfound)
+        { recieveClient.reciveFile(sender_Email,FileName,Data,Length);  
         return 1;
+        }
+        else
+        {
+          return -1;
+        }
     }
+    
+    /************Bodour*////////////
 
 }
