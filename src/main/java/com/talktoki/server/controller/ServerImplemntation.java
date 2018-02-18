@@ -215,36 +215,32 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     /**********Mahrous*********/
     
     /**********Mahrous*********/
-//-1 user not found ,0 error in remote connection,
+//-1 user not found ,0 error in remote connection,1 success
 
     @Override
-    public int SendFile(String sender_Email, String reciever_Email, File file,String x,String y,String t) throws RemoteException {
+    public int SendFile(String sender_Email, String reciever_Email,String FileName,byte[] Data,int Length) throws RemoteException {
         ClientInterface recieveClient = null;
-        for (int i = 0; i < clients.size(); i++) {
+        for (ClientInterface client : clients) {
             try {
-                if (clients.get(i).getUser().getEmail().equals(reciever_Email)) {
-                    recieveClient = clients.get(i);
+                System.out.println(""+reciever_Email);
+                System.out.println(""+client.getUser().getEmail());
+                if (client.getUser().getEmail().equals(reciever_Email)) {
+                    client.reciveFile(sender_Email,FileName,Data,Length);
+                    System.out.println("user found");
                 } else {
                     System.out.println("The user Not found");
-
                     return -1;
                 }
             } catch (RemoteException ex) {
                 return 0;
-            }
+            }  
         }
-        try {
-
-            FileInputStream in = new FileInputStream(file);
-            byte[] mydata = new byte[1024 * 1024];
-            int mylen = in.read(mydata);
-            while (mylen > 0) {
-                recieveClient.reciveFile(file.getName(), mydata, mylen);
-                mylen = in.read(mydata);
-            }
-        } catch (Exception e) {
-            return 0;
-        }
+//        for (int i = 0; i < clients.size(); i++) {
+//          
+//        }
+       
+                
+        
         return 1;
     }
 
