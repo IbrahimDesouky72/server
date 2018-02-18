@@ -66,17 +66,12 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public boolean signOut(ClientInterface myclient) throws RemoteException {
         boolean isSignedOut = false;
-        for (int i = 0; i < clients.size(); i++) {
-            if (myclient == clients.get(i)) {
-                clients.remove(i);
-                isSignedOut = true;
-                serverModel.setStatus(myclient.getUser().getEmail(), "offline");
-                break;
-
-            }
-
-        }
-        
+        System.out.println("STARTING TO REMOVE "+myclient.getUser().getEmail());
+        System.out.println("BEFORE REMOVE: " + clients.size());
+        clients.remove(myclient);
+        System.out.println("AFTER REMOVE: " + clients.size());
+        serverModel.setStatus(myclient.getUser().getEmail(), "offline");
+        isSignedOut = true;
         return isSignedOut;
 
     }
@@ -155,27 +150,28 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public void notifyStatus(String email, int status) throws RemoteException {
         // TODO Update my status in database   
-         if (status == 0) {
+        if (status == 0) {
             serverModel.setStatus(email, "offline");
         } else if (status == 1) {
             serverModel.setStatus(email, "online");
         } else if (status == 2) {
-            
+
             serverModel.setStatus(email, "away");
         } else if (status == 3) {
-            
+
             serverModel.setStatus(email, "busy");
-          }
-        
-        
-        
+        }
+
         // Get my friends
         ArrayList<User> friends = serverModel.getContactList(email);
         User changedUser = serverModel.getUserByEmail(email);
         // Notify online friends
+        System.out.println("clients size " + clients.size());
         for (ClientInterface client : clients) {
             for (User friend : friends) {
                 if (friend.getEmail().equals(client.getUser().getEmail())) {
+                    System.out.println("cLIENT IS: " + client.getUser().getEmail());
+                    System.out.println("Friend is" + friend.getEmail());
                     client.notifyFriendStatusChanged(changedUser, status);
                 }
             }
@@ -216,22 +212,21 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         return isAccepted;
     }
 //-1 user not found ,0 error in remote connection,
+
     @Override
-    public int SendFile(String sender_Email, String reciever_Email, File file) throws RemoteException{
-        ClientInterface recieveClient=null;
+    public int SendFile(String sender_Email, String reciever_Email, File file) throws RemoteException {
+        ClientInterface recieveClient = null;
         for (int i = 0; i < clients.size(); i++) {
             try {
                 if (clients.get(i).getUser().getEmail().equals(reciever_Email)) {
-                    recieveClient=clients.get(i);
-                }
-                else
-                {
+                    recieveClient = clients.get(i);
+                } else {
                     System.out.println("The user Not found");
-                   
-                   return -1;
+
+                    return -1;
                 }
             } catch (RemoteException ex) {
-                return 0;    
+                return 0;
             }
         }
         try {
@@ -244,7 +239,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
                 mylen = in.read(mydata);
             }
         } catch (Exception e) {
-           return 0;
+            return 0;
         }
         return 1;
     }
