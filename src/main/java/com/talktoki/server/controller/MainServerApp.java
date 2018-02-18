@@ -30,7 +30,8 @@ public class MainServerApp extends Application{
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("Server Gui");
         stage.setScene(scene);
-       
+       stage.setResizable(false);
+
         stage.show();
     }
     
