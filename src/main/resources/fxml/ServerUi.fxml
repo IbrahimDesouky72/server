@@ -40,12 +40,17 @@
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #1D8C8C;">
                <children>
-                  <TextArea fx:id="announcementTxtArea" layoutX="46.0" layoutY="63.0" prefHeight="230.0" prefWidth="221.0" style="-fx-background-color: #658e9c; -fx-border-radius: 2%;" />
-                  <Label layoutX="46.0" layoutY="22.0" prefHeight="30.0" prefWidth="207.0" text="Write Announcement" textFill="#cacf85">
+                  <TextArea fx:id="announcementTxtArea" layoutX="46.0" layoutY="63.0" prefHeight="230.0" prefWidth="500.0" style="-fx-background-color: #658e9c; -fx-border-radius: 2%;" />
+                  <Label layoutX="46.0" layoutY="22.0" prefHeight="39.0" prefWidth="293.0" text="Send Announcements" textFill="#cacf85">
                      <font>
-                        <Font size="20.0" />
+                        <Font name="System Bold" size="27.0" />
                      </font></Label>
-                  <JFXButton id="round-red" fx:id="announcementBtn" layoutX="367.0" layoutY="154.0" prefHeight="49.0" prefWidth="131.0" style="-fx-background-color: #5bcc74;" text="Send To Users" />
+                  <JFXButton id="round-red" fx:id="announcementBtn" layoutX="231.0" layoutY="298.0" prefHeight="49.0" prefWidth="131.0" style="-fx-background-color: #5bcc74;" text="Send To Users" />
+                  <Label fx:id="msgLabel" layoutX="47.0" layoutY="293.0" prefHeight="32.0" prefWidth="234.0" text="Successfully sent" visible="false">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </content>

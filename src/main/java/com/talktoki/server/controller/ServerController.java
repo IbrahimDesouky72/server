@@ -60,12 +60,16 @@ public class ServerController {
     public void stop(){
         try {
             registry.unbind("chat");
+            serverImplemntation = null;
         } catch (RemoteException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NotBoundException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
+    public ServerImplemntation getServerImplemntation() {
+        return serverImplemntation;
+    }
+        
 }
