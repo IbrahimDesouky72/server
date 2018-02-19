@@ -60,6 +60,7 @@ public class ServerController {
     public void stop(){
         try {
             registry.unbind("chat");
+            serverImplemntation.notifyUsersOfExiting();
             serverImplemntation = null;
         } catch (RemoteException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);

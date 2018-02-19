@@ -227,7 +227,16 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
                 Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }                                
+    }           
+    public void notifyUsersOfExiting(){
+        for (ClientInterface client : clients) {
+            try {
+                client.serverExit();
+            } catch (RemoteException ex) {
+                Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     /**********Mahrous*********/
 //-1 user not found ,0 error in remote connection,1 success,2 refuse send
 /************Bodour*////////////
