@@ -13,28 +13,33 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 /**
  *
  * @author Mariam
  */
-public class MainServerApp extends Application{
-   
+public class MainServerApp extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/ServerUi.fxml"));
         Scene scene = new Scene(root);
         
-        
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("Server Gui");
         stage.setScene(scene);
-       stage.setResizable(false);
-
+        stage.setResizable(false);
+        
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            
+            @Override
+            public void handle(WindowEvent event) {
+                System.exit(0);
+            }
+        });
         stage.show();
     }
-    
     
     public static void main(String[] args) {
         launch(args);
