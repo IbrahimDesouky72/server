@@ -117,7 +117,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         for (ClientInterface client : clients) {
             for (User userFromUserList : userList) {
                 try {
-                    if (client.getUser().getEmail() == userFromUserList.getEmail()) {
+                    if (client.getUser().getEmail().equals(userFromUserList.getEmail())&&!(userFromUserList.getEmail().equals(sender_email))) {
 
                         client.receiveInGroup(group_id, sender_email, message);
                         groupListCounter++;
