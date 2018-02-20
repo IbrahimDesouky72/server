@@ -634,7 +634,27 @@ public class ServerModel {
 //        System.out.println("return number" + y);
         
         //System.out.println("resut db = ");
-        System.out.println(serverModel.insertUser(u));
+        
+        
+        //System.out.println(serverModel.insertUser(u));
+       //serverModel.setAllUsersOffline();
+    }
+    
+    public void setAllUsersOffline(ArrayList<User>users){
+        for(int i=0;i<users.size();i++){
+          query="update chat_user set status='offline' where email='"+users.get(i).getEmail()+"'";
+        try {
+            statement=con.createStatement();
+            int n=statement.executeUpdate(query);
+            System.out.println(n);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        }
+
+        
+    
     }
 
 }

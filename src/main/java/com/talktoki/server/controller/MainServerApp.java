@@ -35,6 +35,7 @@ public class MainServerApp extends Application {
             
             @Override
             public void handle(WindowEvent event) {
+                
                 System.exit(0);
             }
         });
