@@ -45,12 +45,11 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         clients.add(client);
         ArrayList<String> requests = serverModel.getFriendRequests(client.getUser().getEmail());
         for (int i = 0; i < requests.size(); i++) {
-
-            // WE NEEDED SENDER_NAME AND SENDER_EMAIL 
-            // YOU CALL CLIENT WITH => Sender email and receiver email !!!
-            // client.receiveFriendshipRequest(requests.get(i), client.getUser().getEmail());
-            // I WILL SEND EMAIL AND EMAIL UNTIL YOU FIX IT 
-            client.receiveFriendshipRequest(requests.get(i), requests.get(i));
+            try {
+                client.receiveFriendshipRequest(requests.get(i), requests.get(i));
+            } catch (RemoteException e) {
+                clients.remove(client);
+            }
         }
 
     }
@@ -58,7 +57,7 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public int signUp(User user) throws RemoteException {
         int num = serverModel.insertUser(user);
-        System.out.println("num :"+num);
+//        System.out.println("num :" + num);
         return num;
 
     }
@@ -66,10 +65,11 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
     @Override
     public boolean signOut(ClientInterface myclient) throws RemoteException {
         boolean isSignedOut = false;
-        System.out.println("STARTING TO REMOVE "+myclient.getUser().getEmail());
-        System.out.println("BEFORE REMOVE: " + clients.size());
+//        System.out.println("STARTING TO REMOVE " + myclient.getUser().getEmail());
+//        System.out.println("BEFORE REMOVE: " + clients.size());
+
         clients.remove(myclient);
-        System.out.println("AFTER REMOVE: " + clients.size());
+//        System.out.println("AFTER REMOVE: " + clients.size());
         serverModel.setStatus(myclient.getUser().getEmail(), "offline");
         isSignedOut = true;
         return isSignedOut;
@@ -78,28 +78,19 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
 
     @Override
     public boolean sendToOne(String sender_email, String receiver_email, Message message) throws RemoteException {
-        /*boolean isSent=false;
-         clients.forEach((ClientInterface clientInterface)->{
-         try {
-         if(receiver_email.equals(clientInterface.getUser().getEmail())){
-         isSent=true;
-                    
-         }   } catch (RemoteException ex) {
-         Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
-         }
-        
-         });
-         return isSent;*/
+
         boolean isSent = false;
         for (int i = 0; i < clients.size(); i++) {
             if (clients.get(i).getUser().getEmail().equals(receiver_email)) {
-                isSent = true;
-                clients.get(i).receiveFromOne(sender_email, message);
-                break;
+                try {
+                    isSent = true;
+                    clients.get(i).receiveFromOne(sender_email, message);
+                    break;
+                } catch (RemoteException e) {
+                    clients.remove(clients.get(i));
+                }
             }
-
         }
-
         return isSent;
     }
 
@@ -117,14 +108,13 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         for (ClientInterface client : clients) {
             for (User userFromUserList : userList) {
                 try {
-                    if (client.getUser().getEmail().equals(userFromUserList.getEmail())&&!(userFromUserList.getEmail().equals(sender_email))) {
+                    if (client.getUser().getEmail().equals(userFromUserList.getEmail()) && !(userFromUserList.getEmail().equals(sender_email))) {
 
                         client.receiveInGroup(group_id, sender_email, message);
                         groupListCounter++;
-
                     }
                 } catch (RemoteException ex) {
-                    Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+                    clients.remove(client);
                     sent = false;
                 }
             }
@@ -166,14 +156,19 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         ArrayList<User> friends = serverModel.getContactList(email);
         User changedUser = serverModel.getUserByEmail(email);
         // Notify online friends
-        System.out.println("clients size " + clients.size());
+//        System.out.println("clients size " + clients.size());
         for (ClientInterface client : clients) {
             for (User friend : friends) {
-                if (friend.getEmail().equals(client.getUser().getEmail())) {
-                    System.out.println("cLIENT IS: " + client.getUser().getEmail());
-                    System.out.println("Friend is" + friend.getEmail());
-                    client.notifyFriendStatusChanged(changedUser, status);
+                try {
+                    if (friend.getEmail().equals(client.getUser().getEmail())) {
+//                    System.out.println("cLIENT IS: " + client.getUser().getEmail());
+//                    System.out.println("Friend is" + friend.getEmail());
+                        client.notifyFriendStatusChanged(changedUser, status);
+                    }
+                } catch (RemoteException e) {
+                    clients.remove(client);
                 }
+
             }
         }
     }
@@ -189,9 +184,13 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         int accepted = 0;
         accepted = serverModel.sendFriendRequest(sender, receiver);
         for (int i = 0; i < clients.size(); i++) {
-            if (clients.get(i).getUser().getEmail().equals(receiver)) {
-                clients.get(i).receiveFriendshipRequest(sender, sender);
-                break;
+            try {
+                if (clients.get(i).getUser().getEmail().equals(receiver)) {
+                    clients.get(i).receiveFriendshipRequest(sender, sender);
+                    break;
+                }
+            } catch (RemoteException e) {
+                clients.remove(clients.get(i));
             }
 
         }
@@ -210,76 +209,90 @@ public class ServerImplemntation extends UnicastRemoteObject implements ServerIn
         }
         // Update contacts list of both reciever and sender
         for (ClientInterface client : clients) {
-            if(client.getUser().getEmail().equals(recevier) || client.getUser().getEmail().equals(sender))
-            {
-                client.refreshContacts();
+            try {
+                if (client.getUser().getEmail().equals(recevier) || client.getUser().getEmail().equals(sender)) {
+                    client.refreshContacts();
+                }
+            } catch (RemoteException e) {
+                clients.remove(client);
             }
+
         }
         return isAccepted;
     }
-    
-    /**********Mahrous*********/
-    public void SendAnnouncementToAll(String announcement){
+
+    /**
+     * ********Mahrous********
+     */
+    public void SendAnnouncementToAll(String announcement) {
         for (ClientInterface client : clients) {
             try {
                 client.receiveServerAnnouncement(announcement);
             } catch (RemoteException ex) {
-                Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+                clients.remove(client);
             }
         }
-    }           
-    public void notifyUsersOfExiting(){
+    }
+
+    public void notifyUsersOfExiting() {
         for (ClientInterface client : clients) {
             try {
                 client.serverExit();
             } catch (RemoteException ex) {
-                Logger.getLogger(ServerImplemntation.class.getName()).log(Level.SEVERE, null, ex);
+                clients.remove(client);
             }
         }
     }
-    /**********Mahrous*********/
+
+    /**
+     * ********Mahrous********
+     */
 //-1 user not found ,0 error in remote connection,1 success,2 refuse send
-/************Bodour*////////////
-    
+    /**
+     * **********Bodour
+     *////////////
     @Override
-    public int SendFile(String sender_username, String reciever_Email,String FileName,byte[] Data,int Length,boolean firstSend) throws RemoteException {
-        boolean checkfound=true;
+    public int SendFile(String sender_username, String reciever_Email, String FileName, byte[] Data, int Length, boolean firstSend) throws RemoteException {
+        boolean checkfound = true;
         ClientInterface recieveClient = null;
-        System.out.println("recieverrrrr"+reciever_Email);
-        System.out.println("length"+clients.size());
+//        System.out.println("recieverrrrr" + reciever_Email);
+//        System.out.println("length" + clients.size());
         for (ClientInterface client : clients) {
             try {
-                System.out.println("every person :"+client.getUser().getEmail());
+//                System.out.println("every person :" + client.getUser().getEmail());
                 if (client.getUser().getEmail().equals(reciever_Email)) {
-                   recieveClient=client; 
-                     System.out.println("user found");
-                     checkfound=true;
-                     break;
+                    recieveClient = client;
+//                    System.out.println("user found");
+                    checkfound = true;
+                    break;
                 } else {
-                    System.out.println("The user Not found");
-                    checkfound=false;
+//                    System.out.println("The user Not found");
+                    checkfound = false;
                 }
             } catch (RemoteException ex) {
+                clients.remove(client);
                 return 0;
-            }  
-        }
-        if(checkfound)
-        { 
-        boolean recieveAccept=recieveClient.reciveFile(sender_username,FileName,Data,Length,firstSend);  
-        if(recieveAccept)
-            {
-                return 1;
             }
-            else
-            {
+        }
+        if (checkfound) {
+            try {
+                boolean recieveAccept = recieveClient.reciveFile(sender_username, FileName, Data, Length, firstSend);
+                if (recieveAccept) {
+                    return 1;
+                } else {
+                    return 2;
+                }
+            } catch (RemoteException e) {
+                clients.remove(recieveClient);
                 return 2;
             }
-        }
-        else
-        {
-          return -1;
+
+        } else {
+            return -1;
         }
     }
-    /************Bodour*////////////
+    /**
+     * **********Bodour
+     *////////////
 
 }
