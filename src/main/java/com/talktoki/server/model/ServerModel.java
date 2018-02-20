@@ -640,7 +640,7 @@ public class ServerModel {
        //serverModel.setAllUsersOffline();
     }
     
-    public void setAllUsersOffline(ArrayList<User>users){
+    public void setSomeUsersOffline(ArrayList<User>users){
         for(int i=0;i<users.size();i++){
           query="update chat_user set status='offline' where email='"+users.get(i).getEmail()+"'";
         try {
@@ -652,6 +652,23 @@ public class ServerModel {
         }
         
         }
+
+        
+    
+    }
+    
+     public void setAllUsersOffline(){
+        
+          query="update chat_user set status='offline'";
+        try {
+            statement=con.createStatement();
+            int n=statement.executeUpdate(query);
+            System.out.println(n);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
 
         
     
