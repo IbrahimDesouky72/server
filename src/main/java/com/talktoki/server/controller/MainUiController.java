@@ -153,20 +153,20 @@ public class MainUiController implements Initializable {
         announcementBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("HERE");
                 ServerImplemntation impl = controller.getServerImplemntation();
                 if (impl == null) {
                     Alert myalert = new Alert(Alert.AlertType.ERROR);
                     myalert.setTitle("ERROR");
                     myalert.setHeaderText("Error sending announcement");
                     myalert.setContentText("Please start the server before trying to send an announcement!");
+                    myalert.showAndWait();
                     msgLabel.setVisible(true);
                     msgLabel.setText("ERROR!");
                     msgLabel.setTextFill(Color.RED);
                 } else {
                     impl.SendAnnouncementToAll(announcementTxtArea.getText());
                     msgLabel.setVisible(true);
-                    msgLabel.setText("Sent!");
+                    msgLabel.setText("Sent to online users!");
                     msgLabel.setTextFill(Color.GREEN);
                 }
             }
