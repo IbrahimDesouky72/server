@@ -555,13 +555,13 @@ public class ServerModel {
         double maleNumber=0;
          try {
             String genderStatisticQuery = "select count(email) from chat_user where gender = 'male'";
-            Statement stmt = con.createStatement();
-            ResultSet genderRs = stmt.executeQuery(genderStatisticQuery);
-            if(genderRs.next())
+            statement = con.createStatement();
+            resultSet = statement.executeQuery(genderStatisticQuery);
+            if(resultSet.next())
             {
-                maleNumber = Double.parseDouble(genderRs.getString(1));
+                maleNumber = Double.parseDouble(resultSet.getString(1));
             }
-            genderRs.close();
+            closeResultSet();
           } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -573,13 +573,13 @@ public class ServerModel {
         double femaleNumber=0;
          try {
             String genderStatisticQuery = "select count(email) from chat_user where gender = 'female'";
-            Statement stmt = con.createStatement();
-            ResultSet genderRs = stmt.executeQuery(genderStatisticQuery);
-            if(genderRs.next())
+            statement = con.createStatement();
+            resultSet = statement.executeQuery(genderStatisticQuery);
+            if(resultSet.next())
             {
-                femaleNumber = Double.parseDouble(genderRs.getString(1));
+                femaleNumber = Double.parseDouble(resultSet.getString(1));
             }
-            genderRs.close();
+            closeResultSet();
           } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -591,13 +591,13 @@ public class ServerModel {
         double onlineUsers=0;
         try {
             String sqlOnlineQuery = "select count(email) from chat_user where status = 'online'";
-            Statement stmt = con.createStatement();
-            ResultSet statusRs = stmt.executeQuery(sqlOnlineQuery);
-            if(statusRs.next())
+            statement = con.createStatement();
+            resultSet = statement.executeQuery(sqlOnlineQuery);
+            if(resultSet.next())
             {
-                onlineUsers = Double.parseDouble(statusRs.getString(1));
+                onlineUsers = Double.parseDouble(resultSet.getString(1));
             }
-            statusRs.close();
+            closeResultSet();
             } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -610,13 +610,13 @@ public class ServerModel {
         try {
             
             String sqlStatisticQuery = "select count(email) from chat_user where status='offline'";
-            Statement stmt = con.createStatement();
-            ResultSet statusRs = stmt.executeQuery(sqlStatisticQuery);
-            if(statusRs.next())
+            statement = con.createStatement();
+            resultSet = statement.executeQuery(sqlStatisticQuery);
+            if(resultSet.next())
             {
-                offlineUsers = Integer.parseInt(statusRs.getString(1));
+                offlineUsers = Integer.parseInt(resultSet.getString(1));
             }
-            statusRs.close();
+            closeResultSet();
         } catch (SQLException ex) {
             Logger.getLogger(ServerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
