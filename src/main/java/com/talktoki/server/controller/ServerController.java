@@ -19,14 +19,14 @@ import javafx.scene.control.Alert.AlertType;
  * @author IbrahimDesouky
  */
 public class ServerController {
-    
-    ServerImplemntation serverImplemntation;
-    Registry registry ;
 
-    public ServerController()  {
+    ServerImplemntation serverImplemntation;
+    Registry registry;
+
+    public ServerController() {
         try {
             registry = LocateRegistry.createRegistry(2000);
-            
+
         } catch (RemoteException ex) {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Server Error Message");
@@ -38,30 +38,37 @@ public class ServerController {
         }
 
     }
-    
-    public static void main(String[] args)  {
+
+    public static void main(String[] args) {
         new ServerController();
     }
-    
-    public void start(){
-                try {
-            serverImplemntation=new ServerImplemntation();
-            
-            
+
+    public void start() {
+        try {
+            serverImplemntation = new ServerImplemntation();
+
             registry.rebind("chat", serverImplemntation);
 
         } catch (RemoteException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         }
-                
-                
-    
+
     }
-    public void stop(){
+
+    public void stop() {
         try {
-            registry.unbind("chat");
-            serverImplemntation.notifyUsersOfExiting();
-            serverImplemntation = null;
+            boolean flag = false;
+            for (int i = 0; i < registry.list().length; i++) {
+                if (registry.list()[i].equals("chat")) {
+                    flag = true;
+                }
+            }
+            if ( flag ) {
+                registry.unbind("chat");
+                serverImplemntation.notifyUsersOfExiting();
+                serverImplemntation = null;
+            }
+
         } catch (RemoteException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NotBoundException ex) {
@@ -72,5 +79,5 @@ public class ServerController {
     public ServerImplemntation getServerImplemntation() {
         return serverImplemntation;
     }
-        
+
 }
