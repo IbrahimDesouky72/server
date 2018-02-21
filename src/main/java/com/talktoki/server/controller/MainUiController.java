@@ -164,10 +164,14 @@ public class MainUiController implements Initializable {
                     msgLabel.setText("ERROR!");
                     msgLabel.setTextFill(Color.RED);
                 } else {
-                    impl.SendAnnouncementToAll(announcementTxtArea.getText());
-                    msgLabel.setVisible(true);
-                    msgLabel.setText("Sent to online users!");
-                    msgLabel.setTextFill(Color.GREEN);
+                    String text = announcementTxtArea.getText().trim();
+                    if (text.length() > 0) {
+                        impl.SendAnnouncementToAll(text);
+                        msgLabel.setVisible(true);
+                        msgLabel.setText("Sent to online users!");
+                        msgLabel.setTextFill(Color.GREEN);
+                    }
+                    announcementTxtArea.clear();
                 }
             }
         });
