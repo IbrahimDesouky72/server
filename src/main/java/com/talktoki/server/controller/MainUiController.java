@@ -18,6 +18,7 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -96,35 +97,44 @@ public class MainUiController implements Initializable {
     ServerController controller;
 
     private void generateChart() {
-        ObservableList<PieChart.Data> genderObservableList = FXCollections.observableArrayList();
-        ObservableList<PieChart.Data> onlineOfflineObservableList = FXCollections.observableArrayList();
-        ServerModel serverModelObj = new ServerModel();
-        float[] genderStatisticArray = serverModelObj.getGenderSatistics();
-        int malePercentage = (int) genderStatisticArray[0];
-        int femalePercentage = (int) genderStatisticArray[1];
+                ServerModel serverModelObj = new ServerModel();
 
-        float[] onlineStatisticArray = serverModelObj.getOnlineStatistic();
-        int onlinePercentage = (int) onlineStatisticArray[0];
-        int offlinePercentage = (int) onlineStatisticArray[1];
+                DoubleProperty maleDoubleProperty = new SimpleDoubleProperty(serverModelObj.getMaleNumber());
+                DoubleProperty femaleDoubleProperty = new SimpleDoubleProperty(serverModelObj.getFemaleNumber());
+                Double totalGender = maleDoubleProperty.doubleValue()+femaleDoubleProperty.doubleValue();
+                DoubleProperty onlineDoubleProperty = new SimpleDoubleProperty(serverModelObj.getOnlineUsers());
+                DoubleProperty offlineDoubleProperty = new SimpleDoubleProperty(serverModelObj.getOfflineUsers());
+                PieChart.Data maleData = new PieChart.Data("male", 0);
+                maleData.pieValueProperty().bind(maleDoubleProperty);
+                PieChart.Data femaleData = new PieChart.Data("female", 0);
+                femaleData.pieValueProperty().bind(femaleDoubleProperty);
+                ObservableList<PieChart.Data> genderObservableList = FXCollections.observableArrayList(maleData, femaleData);
 
-        PieChart.Data maleData = new PieChart.Data("Male(" + malePercentage + "%)", malePercentage);
-        PieChart.Data femaleData = new PieChart.Data("Female(" + femalePercentage + "%)", femalePercentage);
+                PieChart.Data onlineData = new PieChart.Data("online", 0);
+                onlineData.pieValueProperty().bind(onlineDoubleProperty);
+                PieChart.Data offlineData = new PieChart.Data("offline", 0);
+                offlineData.pieValueProperty().bind(offlineDoubleProperty);
+                ObservableList<PieChart.Data> onlineOfflineObservableList = FXCollections.observableArrayList(onlineData, offlineData);
+                genderStatistic.setData(genderObservableList);
+                genderStatistic.setTitle("Males and females");
 
-        PieChart.Data onlineData = new PieChart.Data("Online(" + onlinePercentage + "%)", onlinePercentage);
-        PieChart.Data offlineData = new PieChart.Data("Offline(" + offlinePercentage + "%)", offlinePercentage);
+                onlineStatistic.setData(onlineOfflineObservableList);
+                onlineStatistic.setTitle("Online and offline Users Statistic");
 
-        genderObservableList.addAll(maleData, femaleData);
-        genderStatistic.setData(genderObservableList);
-        genderStatistic.setTitle("Males and females");
-        onlineOfflineObservableList.addAll(onlineData, offlineData);
-        onlineStatistic.setData(onlineOfflineObservableList);
-        onlineStatistic.setTitle("Online and offline Users Statistic");
-    }
-
-    @FXML
-    void generateStatistic(ActionEvent event) {
-        generateChart();
-    }
+                new Thread(new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        while (true) {
+                            Thread.sleep(10000);               
+                            maleDoubleProperty.set(serverModelObj.getMaleNumber());
+                            femaleDoubleProperty.set(serverModelObj.getFemaleNumber());
+                            ///genderStatistic.getData();
+                            onlineDoubleProperty.set(serverModelObj.getOnlineUsers());
+                            offlineDoubleProperty.set(serverModelObj.getOfflineUsers());
+                        }
+                    }
+                }).start();
+            }
 
     @FXML
     public void start(ActionEvent event) {
